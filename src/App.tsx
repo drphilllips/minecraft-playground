@@ -5,6 +5,7 @@ type CellType = "none" | "edge" | "centerLine" | "centerOverlap";
 
 const MAX_DIAMETER = 100;
 const GRID_MAX_SIZE = 420; // max pixel width/height for the circle grid and its container
+const ENABLE_MAGNIFIER_DIAMETER = 40;
 const ZOOM_BLOCK_SIZE = 16;
 
 function generateCircleGrid(d: number): CellType[][] {
@@ -113,21 +114,60 @@ export default function App() {
   } | null>(null);
   const gridRef = useRef<HTMLDivElement | null>(null);
 
-  const circleGrid = useMemo(() => {
+  const [viewportWidth, setViewportWidth] = useState<number | null>(null);
+
+  useEffect(() => {
+    const updateWidth = () => {
+      if (typeof window !== "undefined") {
+        setViewportWidth(window.innerWidth);
+      }
+    };
+
+    updateWidth();
+    window.addEventListener("resize", updateWidth);
+    return () => window.removeEventListener("resize", updateWidth);
+  }, []);
+
+  const effectiveGridMaxSize = useMemo(() => {
+    if (viewportWidth == null) return GRID_MAX_SIZE;
+
+    // Treat narrow viewports as "mobile" and use a smaller max size
+    if (viewportWidth < 640) {
+      // Leave some margin on the sides, and clamp to a reasonable range
+      const candidate = viewportWidth - 40;
+      return Math.max(160, Math.min(260, candidate));
+    }
+
+    return GRID_MAX_SIZE;
+  }, [viewportWidth]);
+
+  const effectiveMaxDiameter = useMemo(() => {
+    if (viewportWidth == null) return MAX_DIAMETER;
+    // On "mobile" (narrow viewports), cap diameter at 50
+    return viewportWidth < 640 ? 50 : MAX_DIAMETER;
+  }, [viewportWidth]);
+
+
+  const numericDiameter = useMemo(() => {
     const n = parseInt(diameter, 10);
-    return Number.isFinite(n) && n > 0 ? generateCircleGrid(n) : [];
-  }, [diameter]);
+    if (!Number.isFinite(n) || n <= 0) return null;
+    return Math.min(n, effectiveMaxDiameter);
+  }, [diameter, effectiveMaxDiameter]);
+
+  const circleGrid = useMemo(() => {
+    if (numericDiameter == null) return [];
+    return generateCircleGrid(numericDiameter);
+  }, [numericDiameter]);
 
   const blockSize = useMemo(() => {
-    const n = parseInt(diameter, 10);
-    if (!Number.isFinite(n) || n <= 0) return 16;
+    if (numericDiameter == null) return 16;
 
     const gap = 2; // matches gap-[2px] between cells
-    const size = n; // grid is size x size
+    const size = numericDiameter; // grid is size x size
 
     // Total pixels available for blocks after subtracting gaps
     const totalGaps = Math.max(0, size - 1);
-    const maxPixelsForBlocks = GRID_MAX_SIZE - totalGaps * gap;
+    const maxPixelsForBlocks = effectiveGridMaxSize - totalGaps * gap;
 
     if (maxPixelsForBlocks <= 0) {
       // Fallback to a minimal size if something goes wrong
@@ -136,15 +176,15 @@ export default function App() {
 
     const rawBlockSize = maxPixelsForBlocks / size;
 
-    // Clamp only the upper bound so we never exceed GRID_MAX_SIZE,
+    // Clamp only the upper bound so we never exceed the effective max size,
     // but allow small blocks for large diameters so width == height.
     return Math.min(20, rawBlockSize);
-  }, [diameter]);
+  }, [numericDiameter, effectiveGridMaxSize]);
 
   const magnifierEnabled = useMemo(() => {
-    const n = parseInt(diameter, 10);
-    return Number.isFinite(n) && n >= 50;
-  }, [diameter]);
+    if (numericDiameter == null) return false;
+    return numericDiameter >= ENABLE_MAGNIFIER_DIAMETER;
+  }, [numericDiameter]);
 
   const magnifierWindow = useMemo(() => {
     if (!hoverInfo || !magnifierEnabled || circleGrid.length === 0) return null;
@@ -234,9 +274,9 @@ export default function App() {
 
   const increment = () => {
     const n = parseInt(diameter, 10) || 0;
-    if (n >= MAX_DIAMETER) {
+    if (n >= effectiveMaxDiameter) {
       setShowMaxAlert(true);
-      setDiameter(`${MAX_DIAMETER}`);
+      setDiameter(String(effectiveMaxDiameter));
       return;
     }
     setShowMaxAlert(false);
@@ -302,9 +342,9 @@ export default function App() {
                   setDiameter("");
                   return;
                 }
-                if (n > MAX_DIAMETER) {
+                if (n > effectiveMaxDiameter) {
                   setShowMaxAlert(true);
-                  setDiameter(`${MAX_DIAMETER}`);
+                  setDiameter(String(effectiveMaxDiameter));
                 } else {
                   setShowMaxAlert(false);
                   setDiameter(String(n));
@@ -322,7 +362,7 @@ export default function App() {
 
             {showMaxAlert && (
               <span className="text-xs text-amber-300">
-                {MAX_DIAMETER} is the maximum diameter for this preview.
+                {effectiveMaxDiameter} is the maximum diameter for this preview.
               </span>
             )}
           </div>
@@ -340,7 +380,10 @@ export default function App() {
                   className="inline-flex flex-col space-y-[2px]"
                   onMouseMove={handleGridMouseMove}
                   onMouseLeave={() => setHoverInfo(null)}
-                  style={{ maxWidth: GRID_MAX_SIZE, maxHeight: GRID_MAX_SIZE }}
+                  style={{
+                    maxWidth: effectiveGridMaxSize,
+                    maxHeight: effectiveGridMaxSize,
+                  }}
                 >
                   {circleGrid.map((row, rowIndex) => (
                     <div key={rowIndex} className="flex gap-[2px]">
