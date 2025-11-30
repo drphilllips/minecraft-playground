@@ -377,12 +377,12 @@ export default function App() {
               ) : (
                 <div
                   ref={gridRef}
-                  className="inline-flex flex-col space-y-[2px]"
+                  className="inline-flex items-center justify-center flex-col space-y-[2px]"
                   onMouseMove={handleGridMouseMove}
                   onMouseLeave={() => setHoverInfo(null)}
                   style={{
-                    maxWidth: effectiveGridMaxSize,
-                    maxHeight: effectiveGridMaxSize,
+                    width: effectiveGridMaxSize,
+                    height: effectiveGridMaxSize,
                   }}
                 >
                   {circleGrid.map((row, rowIndex) => (
