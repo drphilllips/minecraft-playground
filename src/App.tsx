@@ -1,4 +1,5 @@
 import { useState, useMemo, useRef, useEffect } from "react";
+import IntegerInput from "./components/IntegerInput";
 
 // Cell type for the circle grid
 type CellType = "none" | "edge" | "centerLine" | "centerOverlap";
@@ -101,7 +102,6 @@ function generateCircleGrid(d: number): CellType[][] {
 
 export default function App() {
   const [diameter, setDiameter] = useState("7");
-  const [showMaxAlert, setShowMaxAlert] = useState(false);
   const [hoverInfo, setHoverInfo] = useState<{
     row: number;
     col: number;
@@ -272,24 +272,6 @@ export default function App() {
     });
   }, [magnifierEnabled, magnifierWindow, hoverInfo]);
 
-  const increment = () => {
-    const n = parseInt(diameter, 10) || 0;
-    if (n >= effectiveMaxDiameter) {
-      setShowMaxAlert(true);
-      setDiameter(String(effectiveMaxDiameter));
-      return;
-    }
-    setShowMaxAlert(false);
-    setDiameter(String(n + 1));
-  };
-
-  const decrement = () => {
-    const n = parseInt(diameter, 10) || 0;
-    const next = Math.max(1, n - 1);
-    setShowMaxAlert(false);
-    setDiameter(String(next));
-  };
-
   return (
     <div className="min-h-screen bg-slate-900 text-slate-100">
       {/* Hero Section */}
@@ -311,61 +293,12 @@ export default function App() {
         </p>
 
         <div className="bg-slate-800/40 rounded-2xl p-6 border border-slate-700">
-          <label className="block text-sm font-medium mb-2">
-            Diameter (positive integer)
-          </label>
-
-          <div className="flex items-center gap-4 flex-wrap">
-            <button
-              onClick={decrement}
-              className="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 transition text-lg"
-            >
-              -
-            </button>
-
-            <input
-              type="text"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              value={diameter}
-              onChange={(e) => {
-                let raw = e.target.value.replace(/[^0-9]/g, "");
-                raw = raw.replace(/^0+/, "");
-                if (raw === "") {
-                  setShowMaxAlert(false);
-                  setDiameter("");
-                  return;
-                }
-                const n = parseInt(raw, 10);
-                if (!Number.isFinite(n)) {
-                  setShowMaxAlert(false);
-                  setDiameter("");
-                  return;
-                }
-                if (n > effectiveMaxDiameter) {
-                  setShowMaxAlert(true);
-                  setDiameter(String(effectiveMaxDiameter));
-                } else {
-                  setShowMaxAlert(false);
-                  setDiameter(String(n));
-                }
-              }}
-              className="w-20 text-center text-2xl font-semibold rounded-lg bg-slate-800 border border-slate-600 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-purple-500"
-            />
-
-            <button
-              onClick={increment}
-              className="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 transition text-lg"
-            >
-              +
-            </button>
-
-            {showMaxAlert && (
-              <span className="text-xs text-amber-300">
-                {effectiveMaxDiameter} is the maximum diameter for this preview.
-              </span>
-            )}
-          </div>
+          <IntegerInput
+            label="Diameter (positive integer)"
+            value={diameter}
+            onChange={setDiameter}
+            maxValue={effectiveMaxDiameter}
+          />
 
           {/* Circle Grid Preview */}
           <div className="mt-6 flex">
