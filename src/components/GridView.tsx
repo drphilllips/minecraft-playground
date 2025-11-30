@@ -8,12 +8,14 @@ const ZOOM_RADIUS = 4;
 export default function GridView({
   grid,
   blockSize,
-  size,
+  width,
+  height,
   magnifierEnabled,
 }: {
   grid: string[][]
   blockSize: number
-  size: number
+  width: number
+  height: number
   magnifierEnabled: boolean
 }) {
   const ref = useRef<HTMLDivElement | null>(null);
@@ -125,8 +127,8 @@ export default function GridView({
         onMouseMove={handleGridMouseMove}
         onMouseLeave={() => setHoverInfo(null)}
         style={{
-          width: size,
-          height: size,
+          width,
+          height,
         }}
       >
         {grid.map((row, rowIndex) => (

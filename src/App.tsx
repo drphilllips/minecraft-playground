@@ -121,7 +121,8 @@ export default function App() {
                 <GridView
                   grid={circleGrid}
                   blockSize={blockSize}
-                  size={effectiveGridMaxSize}
+                  width={effectiveGridMaxSize}
+                  height={effectiveGridMaxSize}
                   magnifierEnabled={magnifierEnabled}
                 />
               )}
