@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import InputLabel from "./InputLabel";
 
 
 export default function IntegerInput({
@@ -7,14 +8,12 @@ export default function IntegerInput({
   onChange,
   maxValue,
   maxReachedAlert,
-  onIncrement,
 }: {
   label: string
   value: string
   onChange: (_: string) => void
   maxValue: number
   maxReachedAlert: string
-  onIncrement?: () => void
 }) {
 
   const [showMaxAlert, setShowMaxAlert] = useState(false)
@@ -32,7 +31,6 @@ export default function IntegerInput({
   }, [value])
 
   const increment = () => {
-    onIncrement?.();
     const n = parseInt(value, 10) || 0;
     if (n >= maxValue) {
       setShowMaxAlert(true);
@@ -55,9 +53,7 @@ export default function IntegerInput({
 
   return (
     <div>
-      <label className="block text-sm font-medium mb-2">
-        {label}
-      </label>
+      <InputLabel label={label} />
 
       <div className="flex items-center gap-4 flex-wrap">
         <button

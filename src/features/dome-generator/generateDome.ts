@@ -1,8 +1,6 @@
 import type { CircularCellType, CircularOutputType } from "../../types/circularStyle";
-import generateCircle from "../circle-generator/generateCircle";
 
 export default function generateDome(d: number, type: CircularOutputType): CircularCellType[][][] {
-  const base = generateCircle(d, "filled");
   const r = d / 2;
 
   // We only need the upper hemisphere of the sphere to form the dome.
@@ -81,8 +79,8 @@ export default function generateDome(d: number, type: CircularOutputType): Circu
 
   // Second pass: shell (outline) using 3D neighbors, but only over
   // the dome-sized volume (z = 0..domeHeight-1).
-  const shell = Array.from({ length: domeHeight }, () =>
-    base.map(row => [...row])
+  const shell = filled.map(levelSlice =>
+    levelSlice.map(row => [...row])
   );
 
   for (let z = 0; z < domeHeight; z++) {

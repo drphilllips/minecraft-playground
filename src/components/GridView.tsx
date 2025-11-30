@@ -14,8 +14,8 @@ export default function GridView({
 }: {
   grid: string[][]
   blockSize: number
-  width: number
-  height: number
+  width?: number
+  height?: number
   magnifierEnabled: boolean
 }) {
   const ref = useRef<HTMLDivElement | null>(null);
@@ -119,67 +119,69 @@ export default function GridView({
   }, [ref, magnifierEnabled, magnifierWindow, hoverInfo]);
 
   return (
-    <div>
-      {/* Grid */}
-      <div
-        ref={ref}
-        className="flex items-center justify-center flex-col space-y-[2px]"
-        onMouseMove={handleGridMouseMove}
-        onMouseLeave={() => setHoverInfo(null)}
-        style={{
-          width,
-          height,
-        }}
-      >
-        {grid.map((row, rowIndex) => (
-          <div key={rowIndex} className="flex gap-[2px]">
-            {row.map((cell, colIndex) => {
-              let cellClasses = "border ";
-
-              cellClasses += cell;
-
-              return (
-                <div
-                  key={colIndex}
-                  className={cellClasses}
-                  style={{ width: blockSize, height: blockSize }}
-                />
-              );
-            })}
-          </div>
-        ))}
-      </div>
-
-      {/* Magnifier */}
-      {magnifierEnabled && magnifierWindow && hoverInfo && magnifierStyle && (
+    <div className="flex">
+      <div className="flex rounded-2xl border border-slate-700 bg-slate-950/80 p-3">
+        {/* Grid */}
         <div
-          className="pointer-events-none fixed z-50 rounded-xl border border-slate-700 bg-slate-950/95 p-2 shadow-xl"
-          style={magnifierStyle}
+          ref={ref}
+          className="flex items-center justify-center flex-col space-y-[2px]"
+          onMouseMove={handleGridMouseMove}
+          onMouseLeave={() => setHoverInfo(null)}
+          style={{
+            width,
+            height,
+          }}
         >
-          <div className="space-y-[2px]">
-            {magnifierWindow.map((row, rowIndex) => (
-              <div key={rowIndex} className="flex gap-[2px]">
-                {row.map((cell, colIndex) => {
-                  let cellClasses = "border ";
+          {grid.map((row, rowIndex) => (
+            <div key={rowIndex} className="flex gap-[2px]">
+              {row.map((cell, colIndex) => {
+                let cellClasses = "border ";
 
-                  cellClasses += cell
+                cellClasses += cell;
 
-                  return (
-                    <div
-                      key={colIndex}
-                      className={cellClasses}
-                      style={{
-                        width: ZOOM_BLOCK_SIZE,
-                        height: ZOOM_BLOCK_SIZE,
-                      }}
-                    />
-                  );
-                })}
-              </div>
-            ))}
-          </div>
+                return (
+                  <div
+                    key={colIndex}
+                    className={cellClasses}
+                    style={{ width: blockSize, height: blockSize }}
+                  />
+                );
+              })}
+            </div>
+          ))}
         </div>
-      )}
+
+        {/* Magnifier */}
+        {magnifierEnabled && magnifierWindow && hoverInfo && magnifierStyle && (
+          <div
+            className="pointer-events-none fixed z-50 rounded-xl border border-slate-700 bg-slate-950/95 p-2 shadow-xl"
+            style={magnifierStyle}
+          >
+            <div className="space-y-[2px]">
+              {magnifierWindow.map((row, rowIndex) => (
+                <div key={rowIndex} className="flex gap-[2px]">
+                  {row.map((cell, colIndex) => {
+                    let cellClasses = "border ";
+
+                    cellClasses += cell
+
+                    return (
+                      <div
+                        key={colIndex}
+                        className={cellClasses}
+                        style={{
+                          width: ZOOM_BLOCK_SIZE,
+                          height: ZOOM_BLOCK_SIZE,
+                        }}
+                      />
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   )
 }

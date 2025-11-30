@@ -4,6 +4,10 @@ import IntegerInput from "../../components/IntegerInput";
 import useCircularGridView from "../../hooks/useCircularGridView";
 import { generateDomeGrid } from "./generateDomeGrid";
 import generateDome from "./generateDome";
+import generateDomeSideviewGrid from "./generateDomeSideviewGrid";
+import IntegerSlider from "../../components/IntegerSlider";
+import Separator from "../../components/Separator";
+import InputLabel from "../../components/InputLabel";
 
 
 export default function DomeGridView({
@@ -49,8 +53,13 @@ export default function DomeGridView({
     return generateDomeGrid(dome, numericLevel || 1);
   }, [dome, numericLevel]);
 
+  const domeSideviewGrid = useMemo(() => {
+    if (!dome) return [];
+    return generateDomeSideviewGrid(dome, numericLevel || 1);
+  }, [dome, numericLevel])
+
   return (
-    <div className="bg-slate-800/40 rounded-2xl p-6 border border-slate-700">
+    <div className="flex flex-col gap-3 bg-slate-800/40 rounded-2xl p-6 border border-slate-700">
       {/* Diameter Input */}
       <IntegerInput
         label="Diameter (positive integer)"
@@ -59,33 +68,44 @@ export default function DomeGridView({
         maxValue={maxDiameter}
         maxReachedAlert={`${maxDiameter} is the maximum value for this preview.`}
       />
-      {/* Level Input */}
-      <IntegerInput
-        label="Level (positive integer)"
-        value={domeLevelDisplay}
-        onChange={setLevel}
-        maxValue={Math.ceil((numericDiameter || 0) / 2)}
-        maxReachedAlert={`Level ${domeLevelDisplay} is the top of this dome.`}
-      />
 
-      {/* Dome Grid */}
-      <div className="mt-6 flex">
-        <div className="flex rounded-2xl border border-slate-700 bg-slate-950/80 p-3">
-          {domeGrid.length === 0 ? (
-            <p className="text-xs text-slate-400">
-              No diameter entered. Please type a positive number to generate a circle grid.
-            </p>
-          ) : (
-            <GridView
-              grid={domeGrid}
-              blockSize={blockSize}
-              width={maxSize}
-              height={maxSize}
-              magnifierEnabled={magnifierEnabled}
-            />
-          )}
+      <div className="flex flex-col">
+        <InputLabel label="Dome-Level Slider" closer />
+
+        <div className="flex flex-row items-center">
+          {/* Dome Sideview Grid */}
+          <GridView
+            grid={domeSideviewGrid}
+            blockSize={blockSize}
+            width={maxSize}
+            height={maxSize/2}
+            magnifierEnabled={magnifierEnabled}
+          />
+
+          {/* Level Slider with matched height */}
+          <IntegerSlider
+            label="Level"
+            value={domeLevelDisplay}
+            onChange={setLevel}
+            maxValue={Math.ceil((numericDiameter || 0) / 2)}
+            height={maxSize/2}
+            paddingTop={0}
+          />
         </div>
       </div>
+
+      <div className="flex flex-col gap-3 w-fit">
+        <Separator className="w-full" />
+
+        {/* Dome Grid */}
+        <GridView
+          grid={domeGrid}
+          blockSize={blockSize}
+          width={maxSize}
+          height={maxSize}
+          magnifierEnabled={magnifierEnabled}
+        />
+        </div>
     </div>
   )
 }
