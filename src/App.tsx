@@ -270,7 +270,7 @@ export default function App() {
       left: clampedLeft,
       top: clampedTop,
     });
-  }, [magnifierEnabled, magnifierWindow, hoverInfo, ZOOM_BLOCK_SIZE]);
+  }, [magnifierEnabled, magnifierWindow, hoverInfo]);
 
   const increment = () => {
     const n = parseInt(diameter, 10) || 0;
