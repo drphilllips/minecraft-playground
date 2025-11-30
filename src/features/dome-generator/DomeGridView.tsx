@@ -3,6 +3,7 @@ import GridView from "../../components/GridView";
 import IntegerInput from "../../components/IntegerInput";
 import useCircularGridView from "../../hooks/useCircularGridView";
 import { generateDomeGrid } from "./generateDomeGrid";
+import generateDome from "./generateDome";
 
 
 export default function DomeGridView({
@@ -38,10 +39,15 @@ export default function DomeGridView({
     return String(numericLevel);
   }, [numericLevel, level]);
 
-  const domeGrid = useMemo(() => {
+  const dome = useMemo(() => {
     if (numericDiameter == null) return [];
-    return generateDomeGrid(numericDiameter, numericLevel || 1);
-  }, [numericDiameter, numericLevel]);
+    return generateDome(numericDiameter, "centerLines");
+  }, [numericDiameter])
+
+  const domeGrid = useMemo(() => {
+    if (!dome) return [];
+    return generateDomeGrid(dome, numericLevel || 1);
+  }, [dome, numericLevel]);
 
   return (
     <div className="bg-slate-800/40 rounded-2xl p-6 border border-slate-700">

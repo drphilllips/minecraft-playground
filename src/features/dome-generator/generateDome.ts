@@ -1,53 +1,95 @@
 import type { CircularCellType, CircularOutputType } from "../../types/circularStyle";
-
+import generateCircle from "../circle-generator/generateCircle";
 
 export default function generateDome(d: number, type: CircularOutputType): CircularCellType[][][] {
+  const base = generateCircle(d, "filled");
   const r = d / 2;
-  const inSphere: boolean[][][] = [];
 
-  // First pass: determine which cells are inside the dome (upper hemisphere of a sphere)
-  for (let z = 0; z < d; z++) {
+  // We only need the upper hemisphere of the sphere to form the dome.
+  // `hemisphereStart` is the first z-index where dz >= 0 in the original
+  // full-sphere coordinate system.
+  const hemisphereStart = Math.floor(r);
+
+  // We keep one extra slice *below* the base of the dome so that neighbor
+  // checks for the lowest dome level still "see" the sphere interior that
+  // sits underneath the base. This preserves the original shell behavior
+  // without needing the entire lower half of the sphere.
+  const regionHeight = d - hemisphereStart + 1; // includes one slice below base
+  const domeHeight = regionHeight - 1; // number of visible dome levels
+
+  // inRegion[z][y][x]
+  // z = 0         -> globalZ = hemisphereStart - 1 (one slice below dome base)
+  // z = 1..end    -> globalZ = hemisphereStart .. d - 1 (actual dome levels)
+  const inRegion: boolean[][][] = [];
+
+  for (let z = 0; z < regionHeight; z++) {
+    const globalZ = hemisphereStart - 1 + z;
     const levelSlice: boolean[][] = [];
+
     for (let y = 0; y < d; y++) {
       const row: boolean[] = [];
+
       for (let x = 0; x < d; x++) {
         const dx = x + 0.5 - r;
         const dy = y + 0.5 - r;
-        const dz = z + 0.5 - r;
+        const dz = globalZ + 0.5 - r;
 
         const distSq = dx * dx + dy * dy + dz * dz;
         const insideSphere = distSq <= r * r;
-
-        // Dome: only keep the upper hemisphere (dz >= 0)
         row.push(insideSphere);
       }
+
       levelSlice.push(row);
     }
-    inSphere.push(levelSlice);
+
+    inRegion.push(levelSlice);
   }
 
-  const filled: CircularCellType[][][] = inSphere.map(levelSlice => (
-    levelSlice.map(row => (
-      row.map(cell => cell ? "body" : "none")
-    ))
-  ))
+  // Helper to check if a (dome-space) coordinate is inside the sphere.
+  // Dome-space z runs 0..domeHeight-1 and maps to inRegion[z+1].
+  const isInside = (z: number, y: number, x: number): boolean => {
+    if (y < 0 || y >= d || x < 0 || x >= d) return false;
 
-  if (type === "filled") {
-    return filled.slice(r, d);
-  }
+    const regionZ = z + 1; // shift up by 1 to skip the below-base slice
+    if (regionZ < 0 || regionZ >= regionHeight) return false;
 
-  // Second pass: mark shell cells only (no filled interior), using 3D neighbors
-  const shell: CircularCellType[][][] = [];
-  for (let z = 0; z < d; z++) {
+    return inRegion[regionZ][y][x];
+  };
+
+  // First visible pass: filled body of the dome
+  const filled: CircularCellType[][][] = [];
+
+  for (let z = 0; z < domeHeight; z++) {
     const levelSlice: CircularCellType[][] = [];
+
     for (let y = 0; y < d; y++) {
       const row: CircularCellType[] = [];
+
       for (let x = 0; x < d; x++) {
-        if (!inSphere[z][y][x]) {
-          row.push("none");
-          continue;
-        }
-        // Check 6-neighbors in 3D; if any neighbor is outside the dome, this is a shell cell.
+        row.push(isInside(z, y, x) ? "body" : "none");
+      }
+
+      levelSlice.push(row);
+    }
+
+    filled.push(levelSlice);
+  }
+
+  if (type === "filled") {
+    return filled;
+  }
+
+  // Second pass: shell (outline) using 3D neighbors, but only over
+  // the dome-sized volume (z = 0..domeHeight-1).
+  const shell = Array.from({ length: domeHeight }, () =>
+    base.map(row => [...row])
+  );
+
+  for (let z = 0; z < domeHeight; z++) {
+    for (let y = 0; y < d; y++) {
+      for (let x = 0; x < d; x++) {
+        if (!isInside(z, y, x)) continue;
+
         const neighbors: [number, number, number][] = [
           [z - 1, y, x],
           [z + 1, y, x],
@@ -58,30 +100,26 @@ export default function generateDome(d: number, type: CircularOutputType): Circu
         ];
 
         let isShell = false;
+
         for (const [nz, ny, nx] of neighbors) {
-          if (nz < 0 || nz >= d || ny < 0 || ny >= d || nx < 0 || nx >= d) {
-            isShell = true;
-            break;
-          }
-          if (!inSphere[nz][ny][nx]) {
+          if (!isInside(nz, ny, nx)) {
             isShell = true;
             break;
           }
         }
-        row.push(isShell ? "edge" : "none");
+
+        if (isShell) {
+          shell[z][y][x] = "edge";
+        }
       }
-      levelSlice.push(row);
     }
-    shell.push(levelSlice);
   }
 
-  // After the outline case:
   if (type === "outline") {
-    return shell.slice(r, d);
+    return shell;
   }
 
-  // Third pass: overlay center lines (north-south and east-west) for each level
-  // Start from the shell as the base (like outline in generateCircle)
+  // Third pass: center lines over the shell, sized to the dome volume.
   const centerLines: CircularCellType[][][] = shell.map(levelSlice =>
     levelSlice.map(row => [...row])
   );
@@ -99,18 +137,16 @@ export default function generateDome(d: number, type: CircularOutputType): Circu
       centerRows.push(Math.floor(d / 2));
     }
 
-    for (let z = 0; z < d; z++) {
+    for (let z = 0; z < domeHeight; z++) {
       for (let y = 0; y < d; y++) {
         for (let x = 0; x < d; x++) {
-          // Only consider cells actually inside the sphere
-          if (!inSphere[z][y][x]) continue;
+          if (!isInside(z, y, x)) continue;
 
           const onVertical = centerCols.includes(x);
           const onHorizontal = centerRows.includes(y);
 
           if (!onVertical && !onHorizontal) continue;
 
-          // Don't overwrite shell edges
           if (centerLines[z][y][x] === "edge") {
             continue;
           }
@@ -125,6 +161,5 @@ export default function generateDome(d: number, type: CircularOutputType): Circu
     }
   }
 
-  // For center-line style, return only the upper hemisphere levels
-  return centerLines.slice(r, d);
+  return centerLines;
 }
