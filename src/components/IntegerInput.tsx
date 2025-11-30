@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 
 export default function IntegerInput({
@@ -6,17 +6,33 @@ export default function IntegerInput({
   value,
   onChange,
   maxValue,
+  maxReachedAlert,
+  onIncrement,
 }: {
   label: string
   value: string
   onChange: (_: string) => void
   maxValue: number
+  maxReachedAlert: string
+  onIncrement?: () => void
 }) {
 
   const [showMaxAlert, setShowMaxAlert] = useState(false)
   const [localValue, setLocalValue] = useState(value);
 
+  useEffect(() => {
+    const n = parseInt(localValue, 10);
+    if (Number.isFinite(n) && n < maxValue) {
+      setShowMaxAlert(false);
+    }
+  }, [localValue, maxValue]);
+
+  useEffect(() => {
+    setLocalValue(value);
+  }, [value])
+
   const increment = () => {
+    onIncrement?.();
     const n = parseInt(value, 10) || 0;
     if (n >= maxValue) {
       setShowMaxAlert(true);
@@ -94,7 +110,7 @@ export default function IntegerInput({
 
         {showMaxAlert && (
           <span className="text-xs text-amber-300">
-            {maxValue} is the maximum value for this preview.
+            {maxReachedAlert}
           </span>
         )}
       </div>

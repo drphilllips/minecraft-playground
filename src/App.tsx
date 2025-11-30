@@ -2,14 +2,13 @@ import { useState, useMemo, useEffect } from "react";
 import IntegerInput from "./components/IntegerInput";
 import GridView from "./components/GridView";
 import { generateCircleGrid } from "./features/circle-generator/generateCircleGrid";
+import useGridView from "./hooks/useGridView";
+import { generateDomeGrid } from "./features/dome-generator/generateDomeGrid";
 
 const MAX_DIAMETER = 100;
 const GRID_MAX_SIZE = 420; // max pixel width/height for the circle grid and its container
-const ENABLE_MAGNIFIER_DIAMETER = 40;
 
 export default function App() {
-  const [diameter, setDiameter] = useState("7");
-
   const [viewportWidth, setViewportWidth] = useState<number | null>(null);
 
   useEffect(() => {
@@ -43,43 +42,52 @@ export default function App() {
     return viewportWidth < 640 ? 50 : MAX_DIAMETER;
   }, [viewportWidth]);
 
-  const numericDiameter = useMemo(() => {
-    const n = parseInt(diameter, 10);
+  const {
+    diameter: circleDiameter,
+    setDiameter: setCircleDiameter,
+    numericDiameter: circleNumericDiameter,
+    blockSize: circleBlockSize,
+    magnifierEnabled: circleMagnifierEnabled,
+  } = useGridView({
+    defaultDiameter: 7,
+    maxDiameter: 100,
+    gridMaxSize: effectiveGridMaxSize,
+    enableMagnifierDiameter: 40,
+  })
+
+  const {
+    diameter: domeDiameter,
+    setDiameter: setDomeDiameter,
+    numericDiameter: numericDomeDiameter,
+    blockSize: domeBlockSize,
+    magnifierEnabled: domeMagnifierEnabled,
+  } = useGridView({
+    defaultDiameter: 7,
+    maxDiameter: 100,
+    gridMaxSize: effectiveGridMaxSize,
+    enableMagnifierDiameter: 40,
+  })
+  const [domeLevel, setDomeLevel] = useState("1");
+  const numericDomeLevel = useMemo(() => {
+    const n = parseInt(domeLevel, 10);
     if (!Number.isFinite(n) || n <= 0) return null;
-    return Math.min(n, effectiveMaxDiameter);
-  }, [diameter, effectiveMaxDiameter]);
+    return Math.min(n, Math.ceil((numericDomeDiameter || 0) / 2));
+  }, [domeLevel, numericDomeDiameter]);
+
+  const domeLevelDisplay = useMemo(() => {
+    if (numericDomeLevel == null) return domeLevel;
+    return String(numericDomeLevel);
+  }, [numericDomeLevel, domeLevel]);
 
   const circleGrid = useMemo(() => {
-    if (numericDiameter == null) return [];
-    return generateCircleGrid(numericDiameter);
-  }, [numericDiameter]);
+    if (circleNumericDiameter == null) return [];
+    return generateCircleGrid(circleNumericDiameter);
+  }, [circleNumericDiameter]);
 
-  const blockSize = useMemo(() => {
-    if (numericDiameter == null) return 16;
-
-    const gap = 2; // matches gap-[2px] between cells
-    const size = numericDiameter; // grid is size x size
-
-    // Total pixels available for blocks after subtracting gaps
-    const totalGaps = Math.max(0, size - 1);
-    const maxPixelsForBlocks = effectiveGridMaxSize - totalGaps * gap;
-
-    if (maxPixelsForBlocks <= 0) {
-      // Fallback to a minimal size if something goes wrong
-      return 2;
-    }
-
-    const rawBlockSize = maxPixelsForBlocks / size;
-
-    // Clamp only the upper bound so we never exceed the effective max size,
-    // but allow small blocks for large diameters so width == height.
-    return Math.min(20, rawBlockSize);
-  }, [numericDiameter, effectiveGridMaxSize]);
-
-  const magnifierEnabled = useMemo(() => {
-    if (numericDiameter == null) return false;
-    return numericDiameter >= ENABLE_MAGNIFIER_DIAMETER;
-  }, [numericDiameter]);
+  const domeGrid = useMemo(() => {
+    if (numericDomeDiameter == null) return [];
+    return generateDomeGrid(numericDomeDiameter, numericDomeLevel || 1);
+  }, [numericDomeDiameter, numericDomeLevel]);
 
   return (
     <div className="min-h-screen bg-slate-900 text-slate-100">
@@ -105,9 +113,10 @@ export default function App() {
           {/* Diameter Input */}
           <IntegerInput
             label="Diameter (positive integer)"
-            value={diameter}
-            onChange={setDiameter}
+            value={circleDiameter}
+            onChange={setCircleDiameter}
             maxValue={effectiveMaxDiameter}
+            maxReachedAlert={`${effectiveMaxDiameter} is the maximum value for this preview.`}
           />
 
           {/* Circle Grid Preview */}
@@ -120,10 +129,57 @@ export default function App() {
               ) : (
                 <GridView
                   grid={circleGrid}
-                  blockSize={blockSize}
+                  blockSize={circleBlockSize}
                   width={effectiveGridMaxSize}
                   height={effectiveGridMaxSize}
-                  magnifierEnabled={magnifierEnabled}
+                  magnifierEnabled={circleMagnifierEnabled}
+                />
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Dome Generator Section */}
+      <section className="max-w-3xl mx-auto px-6 py-12">
+        <h2 className="text-3xl font-bold mb-3">Dome Generator</h2>
+        <p className="text-slate-300 mb-8 max-w-xl">
+          Choose a diameter and slide through the levels to see each 2D slice
+          of your dome. Use these cross-sections to build clean, precise domes in Minecraft.
+        </p>
+
+        <div className="bg-slate-800/40 rounded-2xl p-6 border border-slate-700">
+          {/* Diameter Input */}
+          <IntegerInput
+            label="Diameter (positive integer)"
+            value={domeDiameter}
+            onChange={setDomeDiameter}
+            maxValue={effectiveMaxDiameter}
+            maxReachedAlert={`${effectiveMaxDiameter} is the maximum value for this preview.`}
+          />
+          {/* Level Input */}
+          <IntegerInput
+            label="Level (positive integer)"
+            value={domeLevelDisplay}
+            onChange={setDomeLevel}
+            maxValue={Math.ceil((numericDomeDiameter || 0) / 2)}
+            maxReachedAlert={`Level ${domeLevelDisplay} is the top of this dome.`}
+          />
+
+          {/* Circle Grid Preview */}
+          <div className="mt-6 flex">
+            <div className="flex rounded-2xl border border-slate-700 bg-slate-950/80 p-3">
+              {domeGrid.length === 0 ? (
+                <p className="text-xs text-slate-400">
+                  No diameter entered. Please type a positive number to generate a circle grid.
+                </p>
+              ) : (
+                <GridView
+                  grid={domeGrid}
+                  blockSize={domeBlockSize}
+                  width={effectiveGridMaxSize}
+                  height={effectiveGridMaxSize}
+                  magnifierEnabled={domeMagnifierEnabled}
                 />
               )}
             </div>
