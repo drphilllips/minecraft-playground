@@ -1,19 +1,19 @@
 import { useMemo, useState } from "react";
 import calculateBlockSize from "../utils/calculateBlockSize";
 
-type UseGridViewOptions = {
+type UseCircularGridViewOptions = {
   defaultDiameter: number;
   maxDiameter: number;
   gridMaxSize: number;
   enableMagnifierDiameter?: number;
 };
 
-export default function useGridView({
+export default function useCircularGridView({
   defaultDiameter,
   maxDiameter,
   gridMaxSize,
   enableMagnifierDiameter = 40,
-}: UseGridViewOptions) {
+}: UseCircularGridViewOptions) {
   const [diameter, setDiameter] = useState(`${defaultDiameter}`);
 
   const numericDiameter = useMemo(() => {
