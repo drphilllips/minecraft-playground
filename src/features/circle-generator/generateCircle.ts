@@ -1,9 +1,7 @@
+import type { CircularCellType, CircularOutputType } from "../../types/circularStyle";
 
 
-export type CircleOutputType = "filled" | "outline" | "centerLines";
-export type CircleCellType = "body" | "edge" | "centerLine" | "centerOverlap" | "none";
-
-export default function generateCircle(d: number, type: CircleOutputType): CircleCellType[][] {
+export default function generateCircle(d: number, type: CircularOutputType): CircularCellType[][] {
   const size = Math.max(1, Math.floor(d));
   const r = size / 2;
   const inCircle: boolean[][] = [];
@@ -21,7 +19,7 @@ export default function generateCircle(d: number, type: CircleOutputType): Circl
   }
 
   if (type === "filled") {
-    const filled: CircleCellType[][] = inCircle.map(row => (
+    const filled: CircularCellType[][] = inCircle.map(row => (
       row.map(cell => (
         cell ? "body" : "none"
       ))
@@ -30,9 +28,9 @@ export default function generateCircle(d: number, type: CircleOutputType): Circl
   }
 
   // Second pass: mark edge cells only (no filled interior)
-  const outline: CircleCellType[][] = [];
+  const outline: CircularCellType[][] = [];
   for (let y = 0; y < size; y++) {
-    const row: CircleCellType[] = [];
+    const row: CircularCellType[] = [];
     for (let x = 0; x < size; x++) {
       if (!inCircle[y][x]) {
         row.push("none");
