@@ -1,17 +1,20 @@
 import { Link } from "react-router-dom";
 import CirclePreview from "../features/previews/CirclePreview";
 import DomePreview from "../features/previews/DomePreview";
+import { useResponsiveDesign } from "../hooks/useResponsiveDesign";
 
 export default function HomePage() {
+  const { onMobile } = useResponsiveDesign()
+
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100 text-center py-20 px-10">
+    <div className={`min-h-screen bg-slate-900 text-slate-100 text-center ${onMobile ? "px-1 py-5" : "px-10 py-20"}`}>
       <h1 className="text-5xl font-extrabold tracking-tight">Minecraft Playground</h1>
       <p className="mt-4 text-lg text-slate-300 max-w-xl mx-auto">
         Procedural tools and helpers for Minecraft builders.
       </p>
 
-      <div className="mt-12 flex justify-center">
-        <div className="w-full max-w-5xl flex flex-row gap-6 items-stretch">
+      <div className={`${onMobile ? "mt-6" : "mt-12"} flex justify-center`}>
+        <div className={`w-full max-w-5xl flex flex-row ${onMobile ? "gap-1" : "gap-6"} items-stretch`}>
           {/* Circle Generator Preview */}
           <div className="flex-1">
             <Link
