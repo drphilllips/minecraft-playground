@@ -47,7 +47,7 @@ export default function HomePage() {
                   <h2 className="text-2xl font-semibold text-left">Dome Generator</h2>
                 </div>
                 <p className="text-sm text-slate-300 text-left">
-                  Create smooth Minecraft domes with precise layer‑by‑layer guides.
+                  Create smooth domes with precise layer‑by‑layer guides.
                 </p>
                 {/* Dome preview placeholder */}
                 <div className="mt-auto">
