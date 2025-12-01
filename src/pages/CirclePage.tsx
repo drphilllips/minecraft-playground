@@ -7,7 +7,6 @@ export default function CirclePage() {
       name="Circle Generator"
       description={`
         Enter a diameter to generate a 2D block circle.
-        This helps you build perfect circular structures in Minecraft.
       `}
     >
       <CircleGridView />

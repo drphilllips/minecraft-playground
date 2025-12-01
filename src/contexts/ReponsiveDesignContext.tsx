@@ -9,7 +9,7 @@ import {
 // Import your constants
 import {
   WEB_GRID_MAX_SIZE,
-  MOBILE_VIEWPORT_THRESHOLD,
+  SHRINK_STUFF_THRESHOLD,
   MOBILE_GRID_MAX_SIZE,
   GRID_MIN_SIZE,
   WEB_MAX_DIAMETER,
@@ -26,7 +26,6 @@ type ResponsiveDesignContextType = {
 const ResponsiveDesignContext = createContext<ResponsiveDesignContextType | null>(null);
 
 export function ResponsiveDesignProvider({ children }: { children: ReactNode }) {
-  const [onMobile, setOnMobile] = useState(false);
   const [viewportWidth, setViewportWidth] = useState<number | null>(null);
 
   // --- Track viewport width ---
@@ -46,8 +45,7 @@ export function ResponsiveDesignProvider({ children }: { children: ReactNode }) 
   const effectiveGridMaxSize = useMemo(() => {
     if (viewportWidth == null) return WEB_GRID_MAX_SIZE;
 
-    if (viewportWidth < MOBILE_VIEWPORT_THRESHOLD) {
-      setTimeout(() => setOnMobile(true), 0);
+    if (viewportWidth < SHRINK_STUFF_THRESHOLD) {
       const candidate = viewportWidth - 40;
       return Math.max(GRID_MIN_SIZE, Math.min(MOBILE_GRID_MAX_SIZE, candidate));
     }
@@ -55,11 +53,21 @@ export function ResponsiveDesignProvider({ children }: { children: ReactNode }) 
     return WEB_GRID_MAX_SIZE;
   }, [viewportWidth]);
 
+  const onMobile = useMemo(() => {
+    if (viewportWidth == null) return false;
+
+    if (viewportWidth < SHRINK_STUFF_THRESHOLD) {
+      return true;
+    }
+
+    return false;
+  }, [viewportWidth])
+
   // --- Compute allowed max diameter ---
   const effectiveMaxDiameter = useMemo(() => {
     if (viewportWidth == null) return WEB_MAX_DIAMETER;
 
-    return viewportWidth < MOBILE_VIEWPORT_THRESHOLD
+    return viewportWidth < SHRINK_STUFF_THRESHOLD
       ? MOBILE_MAX_DIAMETER
       : WEB_MAX_DIAMETER;
   }, [viewportWidth]);
