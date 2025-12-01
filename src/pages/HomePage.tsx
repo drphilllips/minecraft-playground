@@ -13,7 +13,7 @@ export default function HomePage() {
         Procedural tools and helpers for Minecraft builders.
       </p>
 
-      <div className={`${onMobile ? "mt-2" : "mt-12"} flex justify-center`}>
+      <div className={`${onMobile ? "mt-6" : "mt-12"} flex justify-center`}>
         <div className={`w-full max-w-5xl flex flex-row ${onMobile ? "gap-1" : "gap-6"} items-stretch`}>
           {/* Circle Generator Preview */}
           <div className="flex-1">
