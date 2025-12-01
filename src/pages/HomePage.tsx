@@ -7,13 +7,13 @@ export default function HomePage() {
   const { onMobile } = useResponsiveDesign()
 
   return (
-    <div className={`min-h-screen bg-slate-900 text-slate-100 text-center ${onMobile ? "px-1 py-5" : "px-10 py-20"}`}>
+    <div className={`min-h-screen bg-slate-900 text-slate-100 text-center ${onMobile ? "px-1 py-5 overflow-hidden" : "px-10 py-20"}`}>
       <h1 className="text-5xl font-extrabold tracking-tight">Minecraft Playground</h1>
       <p className="mt-4 text-lg text-slate-300 max-w-xl mx-auto">
         Procedural tools and helpers for Minecraft builders.
       </p>
 
-      <div className={`${onMobile ? "mt-6" : "mt-12"} flex justify-center`}>
+      <div className={`${onMobile ? "mt-2" : "mt-12"} flex justify-center`}>
         <div className={`w-full max-w-5xl flex flex-row ${onMobile ? "gap-1" : "gap-6"} items-stretch`}>
           {/* Circle Generator Preview */}
           <div className="flex-1">
@@ -26,8 +26,7 @@ export default function HomePage() {
                   <h2 className="text-2xl font-semibold text-left">Circle Generator</h2>
                 </div>
                 <p className="text-sm text-slate-300 text-left">
-                  Generate perfectly rounded 2D circle blueprints for your Minecraft builds.
-                  Adjust the diameter and instantly see the block layout you&apos;ll need.
+                  Build perfect circular structures with ease.
                 </p>
                 {/* Circle preview placeholder */}
                 <div className="mt-auto">
@@ -48,8 +47,7 @@ export default function HomePage() {
                   <h2 className="text-2xl font-semibold text-left">Dome Generator</h2>
                 </div>
                 <p className="text-sm text-slate-300 text-left">
-                  Build smooth Minecraft domes, layer by layer. Choose a diameter and inspect
-                  each level&apos;s block pattern with side and top-down views.
+                  Create smooth Minecraft domes with precise layer‑by‑layer guides.
                 </p>
                 {/* Dome preview placeholder */}
                 <div className="mt-auto">

@@ -1,2 +1,12 @@
 /* src/index.css */
 @import "tailwindcss";
+
+/* Disable scrolling on mobile devices */
+@media (max-width: 768px) {
+  html, body {
+    overscroll-behavior: none; /* disables browser bounce */
+    overflow: hidden;          /* disables scrolling */
+    height: 100%;              /* required to lock the viewport */
+    touch-action: none;        /* optional: prevents weird touch behaviors */
+  }
+}
