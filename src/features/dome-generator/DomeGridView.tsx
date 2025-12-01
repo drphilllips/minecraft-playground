@@ -8,15 +8,11 @@ import generateDomeSideviewGrid from "./generateDomeSideviewGrid";
 import IntegerSlider from "../../components/IntegerSlider";
 import Separator from "../../components/Separator";
 import InputLabel from "../../components/InputLabel";
+import { useResponsiveDesign } from "../../hooks/useResponsiveDesign";
 
 
-export default function DomeGridView({
-  maxDiameter,
-  maxSize,
-}: {
-  maxDiameter: number;
-  maxSize: number;
-}) {
+export default function DomeGridView() {
+  const { effectiveMaxDiameter, effectiveGridMaxSize } = useResponsiveDesign()
 
   const {
     diameter,
@@ -26,8 +22,8 @@ export default function DomeGridView({
     magnifierEnabled,
     zoomBlockSize,
   } = useCircularGridView({
-    maxDiameter,
-    gridMaxSize: maxSize,
+    maxDiameter: effectiveMaxDiameter,
+    gridMaxSize: effectiveGridMaxSize,
   })
   const [level, setLevel] = useState("1");
 
@@ -64,8 +60,8 @@ export default function DomeGridView({
         label="Diameter (positive integer)"
         value={diameter}
         onChange={setDiameter}
-        maxValue={maxDiameter}
-        maxReachedAlert={`${maxDiameter} is the maximum value for this preview.`}
+        maxValue={effectiveMaxDiameter}
+        maxReachedAlert={`${effectiveMaxDiameter} is the maximum value for this preview.`}
       />
 
       <div className="flex flex-col">
@@ -76,8 +72,8 @@ export default function DomeGridView({
           <GridView
             grid={domeSideviewGrid}
             blockSize={blockSize}
-            width={maxSize}
-            height={maxSize/2}
+            width={effectiveGridMaxSize}
+            height={effectiveGridMaxSize/2}
             magnifierEnabled={magnifierEnabled}
             zoomBlockSize={zoomBlockSize}
           />
@@ -88,7 +84,7 @@ export default function DomeGridView({
             value={domeLevelDisplay}
             onChange={setLevel}
             maxValue={Math.ceil((numericDiameter || 0) / 2)}
-            height={maxSize/2}
+            height={effectiveGridMaxSize/2}
             paddingTop={0}
           />
         </div>
@@ -101,8 +97,8 @@ export default function DomeGridView({
         <GridView
           grid={domeGrid}
           blockSize={blockSize}
-          width={maxSize}
-          height={maxSize}
+          width={effectiveGridMaxSize}
+          height={effectiveGridMaxSize}
           magnifierEnabled={magnifierEnabled}
           zoomBlockSize={zoomBlockSize}
         />
