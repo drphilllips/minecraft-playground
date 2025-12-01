@@ -6,7 +6,7 @@ export default function DomePage() {
     <FeaturePage
       name="Dome Generator"
       description={`
-        Choose a diameter and slide through the levels to see each 2D slice of your dome.
+        Choose a diameter and slide through levels to see each 2D slice of your dome.
       `}
     >
       <DomeGridView />

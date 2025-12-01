@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useResponsiveDesign } from "../hooks/useResponsiveDesign";
 
 export default function IntegerSlider({
   label,
@@ -15,6 +16,8 @@ export default function IntegerSlider({
   height: number; // visual height of the vertical slider (px)
   paddingTop: number;
 }) {
+  const { onMobile } = useResponsiveDesign();
+
   const [localValue, setLocalValue] = useState(value);
 
   // Sync external changes → internal state
@@ -41,9 +44,9 @@ export default function IntegerSlider({
   const trackThickness = 32; // tweak this to taste
 
   return (
-    <div className="flex flex-row">
+    <div className={`flex flex-row items-start ${!onMobile && "gap-2"}`}>
       <div
-        className="relative flex items-center justify-center"
+        className="relative flex items-center justify-center shrink-0"
         style={{ paddingTop, width: trackThickness, height }}
       >
         <input
