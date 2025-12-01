@@ -1,6 +1,9 @@
 import CircleGridView from "../features/circle-generator/CircleGridView";
+import { useResponsiveDesign } from "../hooks/useResponsiveDesign";
 
 export default function CirclePage() {
+  const { effectiveMaxDiameter, effectiveGridMaxSize } = useResponsiveDesign();
+
   return (
     <div className="min-h-screen bg-slate-900 text-slate-100 px-6 py-12">
       <h2 className="text-3xl font-bold mb-3">Circle Generator</h2>
@@ -9,7 +12,7 @@ export default function CirclePage() {
         perfect circular structures in Minecraft.
       </p>
 
-      <CircleGridView maxDiameter={100} maxSize={420} />
+      <CircleGridView maxDiameter={effectiveMaxDiameter} maxSize={effectiveGridMaxSize} />
     </div>
   );
 }

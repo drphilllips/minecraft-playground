@@ -2,7 +2,6 @@ import { useEffect, useMemo, useRef, useState } from "react"
 import { BLANK_CELL_STYLE } from "../constants/gridCellStyles";
 
 
-const ZOOM_BLOCK_SIZE = 16;
 const ZOOM_RADIUS = 4;
 
 export default function GridView({
@@ -11,12 +10,14 @@ export default function GridView({
   width,
   height,
   magnifierEnabled,
+  zoomBlockSize,
 }: {
   grid: string[][]
   blockSize: number
   width?: number
   height?: number
   magnifierEnabled: boolean
+  zoomBlockSize: number
 }) {
   const ref = useRef<HTMLDivElement | null>(null);
 
@@ -98,8 +99,8 @@ export default function GridView({
     const rows = magnifierWindow.length;
     const cols = magnifierWindow[0]?.length ?? 0;
     const gap = 2;
-    const magWidth = cols * ZOOM_BLOCK_SIZE + (cols - 1) * gap;
-    const magHeight = rows * ZOOM_BLOCK_SIZE + (rows - 1) * gap;
+    const magWidth = cols * zoomBlockSize + (cols - 1) * gap;
+    const magHeight = rows * zoomBlockSize + (rows - 1) * gap;
 
     const desiredLeft = hoverInfo.clientX - magWidth / 2;
     const desiredTop = hoverInfo.clientY - magHeight / 2;
@@ -116,7 +117,7 @@ export default function GridView({
       left: clampedLeft,
       top: clampedTop,
     });
-  }, [ref, magnifierEnabled, magnifierWindow, hoverInfo]);
+  }, [ref, zoomBlockSize, magnifierEnabled, magnifierWindow, hoverInfo]);
 
   return (
     <div className="flex">
@@ -170,8 +171,8 @@ export default function GridView({
                         key={colIndex}
                         className={cellClasses}
                         style={{
-                          width: ZOOM_BLOCK_SIZE,
-                          height: ZOOM_BLOCK_SIZE,
+                          width: zoomBlockSize,
+                          height: zoomBlockSize,
                         }}
                       />
                     );

@@ -3,8 +3,17 @@ import HomePage from "./pages/HomePage";
 import CirclePage from "./pages/CirclePage";
 import DomePage from "./pages/DomePage";
 import NavBar from "./components/NavBar";
+import { ResponsiveDesignProvider } from "./contexts/ReponsiveDesignContext";
 
 export default function App() {
+  return (
+    <ResponsiveDesignProvider>
+      <Routing />
+    </ResponsiveDesignProvider>
+  );
+}
+
+function Routing() {
   return (
     <Router>
       <NavBar />

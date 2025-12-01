@@ -1,6 +1,9 @@
 import DomeGridView from "../features/dome-generator/DomeGridView";
+import { useResponsiveDesign } from "../hooks/useResponsiveDesign";
 
 export default function DomePage() {
+  const { effectiveMaxDiameter, effectiveGridMaxSize } = useResponsiveDesign();
+
   return (
     <div className="min-h-screen bg-slate-900 text-slate-100 px-6 py-12">
       <h2 className="text-3xl font-bold mb-3">Dome Generator</h2>
@@ -9,7 +12,7 @@ export default function DomePage() {
         of your dome. Use these cross-sections to build clean, precise domes in Minecraft.
       </p>
 
-      <DomeGridView maxDiameter={100} maxSize={420} />
+      <DomeGridView maxDiameter={effectiveMaxDiameter} maxSize={effectiveGridMaxSize} />
     </div>
   );
 }

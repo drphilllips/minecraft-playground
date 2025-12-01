@@ -1,18 +1,19 @@
 import { useMemo, useState } from "react";
 import calculateBlockSize from "../utils/calculateBlockSize";
+import { MOBILE_MAX_DIAMETER, WEB_SMALL_ZOOM_BLOCK_SIZE, WEB_DEFAULT_ZOOM_BLOCK_SIZE } from "../constants/responsiveDesign";
 
 type UseCircularGridViewOptions = {
-  defaultDiameter: number;
   maxDiameter: number;
   gridMaxSize: number;
+  defaultDiameter?: number;
   enableMagnifierDiameter?: number;
 };
 
 export default function useCircularGridView({
-  defaultDiameter,
   maxDiameter,
   gridMaxSize,
-  enableMagnifierDiameter = 40,
+  defaultDiameter=10,
+  enableMagnifierDiameter=40,
 }: UseCircularGridViewOptions) {
   const [diameter, setDiameter] = useState(`${defaultDiameter}`);
 
@@ -31,11 +32,20 @@ export default function useCircularGridView({
     return numericDiameter >= enableMagnifierDiameter;
   }, [numericDiameter, enableMagnifierDiameter]);
 
+  const zoomBlockSize = useMemo(() => {
+    if (maxDiameter === MOBILE_MAX_DIAMETER) {
+      return WEB_SMALL_ZOOM_BLOCK_SIZE;
+    } else {
+      return WEB_DEFAULT_ZOOM_BLOCK_SIZE;
+    }
+  }, [maxDiameter])
+
   return {
     diameter,
     setDiameter,
     numericDiameter,
     blockSize,
     magnifierEnabled,
+    zoomBlockSize,
   };
 }
