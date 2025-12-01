@@ -7,6 +7,8 @@ const MOBILE_VIEWPORT_THRESHOLD = 640;
 const WEB_MAX_DIAMETER = 100;
 const MOBILE_MAX_DIAMETER = 50;
 const WEB_GRID_MAX_SIZE = 420; // max pixel width/height for the circle grid and its container
+const MOBILE_GRID_MAX_SIZE = 200;
+const GRID_MIN_SIZE = 160;
 
 export default function App() {
   const [viewportWidth, setViewportWidth] = useState<number | null>(null);
@@ -30,7 +32,7 @@ export default function App() {
     if (viewportWidth < MOBILE_VIEWPORT_THRESHOLD) {
       // Leave some margin on the sides, and clamp to a reasonable range
       const candidate = viewportWidth - 40;
-      return Math.max(160, Math.min(260, candidate));
+      return Math.max(GRID_MIN_SIZE, Math.min(MOBILE_GRID_MAX_SIZE, candidate));
     }
 
     return WEB_GRID_MAX_SIZE;
