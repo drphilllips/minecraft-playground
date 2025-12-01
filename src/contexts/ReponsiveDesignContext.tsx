@@ -17,6 +17,7 @@ import {
 } from "../constants/responsiveDesign";
 
 type ResponsiveDesignContextType = {
+  onMobile: boolean;
   viewportWidth: number | null;
   effectiveGridMaxSize: number;
   effectiveMaxDiameter: number;
@@ -25,6 +26,7 @@ type ResponsiveDesignContextType = {
 const ResponsiveDesignContext = createContext<ResponsiveDesignContextType | null>(null);
 
 export function ResponsiveDesignProvider({ children }: { children: ReactNode }) {
+  const [onMobile, setOnMobile] = useState(false);
   const [viewportWidth, setViewportWidth] = useState<number | null>(null);
 
   // --- Track viewport width ---
@@ -45,6 +47,7 @@ export function ResponsiveDesignProvider({ children }: { children: ReactNode }) 
     if (viewportWidth == null) return WEB_GRID_MAX_SIZE;
 
     if (viewportWidth < MOBILE_VIEWPORT_THRESHOLD) {
+      setTimeout(() => setOnMobile(true), 0);
       const candidate = viewportWidth - 40;
       return Math.max(GRID_MIN_SIZE, Math.min(MOBILE_GRID_MAX_SIZE, candidate));
     }
@@ -64,6 +67,7 @@ export function ResponsiveDesignProvider({ children }: { children: ReactNode }) 
   return (
     <ResponsiveDesignContext.Provider
       value={{
+        onMobile,
         viewportWidth,
         effectiveGridMaxSize,
         effectiveMaxDiameter,
