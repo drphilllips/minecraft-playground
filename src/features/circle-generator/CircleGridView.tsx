@@ -20,11 +20,10 @@ export default function CircleGridView({
     numericDiameter,
     blockSize,
     magnifierEnabled,
+    zoomBlockSize,
   } = useCircularGridView({
-    defaultDiameter: 7,
-    maxDiameter: 100,
+    maxDiameter,
     gridMaxSize: maxSize,
-    enableMagnifierDiameter: 40,
   })
 
   const circleGrid = useMemo(() => {
@@ -53,6 +52,7 @@ export default function CircleGridView({
           width={maxSize}
           height={maxSize}
           magnifierEnabled={magnifierEnabled}
+          zoomBlockSize={zoomBlockSize}
         />
       </div>
     </div>
