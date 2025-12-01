@@ -1,0 +1,3 @@
+
+export const PREVIEW_DIAMETER_RANGE = [1, 49];
+export const CIRCLE_PREVIEW_TIMING = 100;

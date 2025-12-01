@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { BLANK_CELL_STYLE } from "../constants/gridCellStyles";
+import { WEB_DEFAULT_ZOOM_BLOCK_SIZE } from "../constants/responsiveDesign";
 
 
 const ZOOM_RADIUS = 4;
@@ -10,14 +11,14 @@ export default function GridView({
   width,
   height,
   magnifierEnabled,
-  zoomBlockSize,
+  zoomBlockSize=WEB_DEFAULT_ZOOM_BLOCK_SIZE,
 }: {
   grid: string[][]
   blockSize: number
   width?: number
   height?: number
   magnifierEnabled: boolean
-  zoomBlockSize: number
+  zoomBlockSize?: number
 }) {
   const ref = useRef<HTMLDivElement | null>(null);
 

@@ -12,7 +12,7 @@ type UseCircularGridViewOptions = {
 export default function useCircularGridView({
   maxDiameter,
   gridMaxSize,
-  defaultDiameter=10,
+  defaultDiameter=17,
   enableMagnifierDiameter=40,
 }: UseCircularGridViewOptions) {
   const [diameter, setDiameter] = useState(`${defaultDiameter}`);

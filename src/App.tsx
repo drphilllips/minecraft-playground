@@ -16,7 +16,9 @@ export default function App() {
 function Routing() {
   return (
     <Router>
-      <NavBar />
+      <div className="sticky top-0 z-50">
+        <NavBar />
+      </div>
 
       <Routes>
         <Route path="/" element={<HomePage />} />
