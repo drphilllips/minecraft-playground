@@ -3,6 +3,7 @@ import type React from "react";
 import { BLANK_CELL_STYLE } from "../constants/gridCellStyles";
 import { WEB_DEFAULT_ZOOM_BLOCK_SIZE } from "../constants/responsiveDesign";
 import type { Pixel } from "../types/imageTranslator";
+import FeatureOutputContainer from "./FeatureOutputContainer";
 
 
 const ZOOM_RADIUS = 4;
@@ -156,92 +157,90 @@ export default function GridView({
   }, [ref, zoomBlockSize, magnifierEnabled, magnifierWindow, hoverInfo]);
 
   return (
-    <div className="flex">
-      <div className="flex rounded-2xl border border-slate-700 bg-slate-950/80 p-3">
-        {/* Grid */}
-        <div
-          ref={ref}
-          className="flex items-center justify-center flex-col space-y-[2px]"
-          onMouseMove={handleGridMouseMove}
-          onMouseLeave={() => setHoverInfo(null)}
-          style={{
-            width,
-            height,
-          }}
-        >
-          {grid.map((row, rowIndex) => (
-            <div key={rowIndex} className="flex gap-[2px]">
-              {row.map((cell, colIndex) => {
-                const style: React.CSSProperties = {
-                  width: blockSize,
-                  height: blockSize,
-                };
+    <FeatureOutputContainer>
+      {/* Grid */}
+      <div
+        ref={ref}
+        className="flex items-center justify-center flex-col space-y-[2px]"
+        onMouseMove={handleGridMouseMove}
+        onMouseLeave={() => setHoverInfo(null)}
+        style={{
+          width,
+          height,
+        }}
+      >
+        {grid.map((row, rowIndex) => (
+          <div key={rowIndex} className="flex gap-[2px]">
+            {row.map((cell, colIndex) => {
+              const style: React.CSSProperties = {
+                width: blockSize,
+                height: blockSize,
+              };
 
-                let cellClasses = "";
+              let cellClasses = "";
 
-                if (typeof cell === "string") {
-                  // String-based grids (circle/dome/etc.) still use Tailwind borders
-                  cellClasses = "border " + cell;
-                } else {
-                  // Pixel grids: no extra border so colors don't get washed out at high resolutions
-                  const { r, g, b, a } = cell as Pixel;
-                  const alpha = a <= 1 ? a : a / 255;
-                  style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${alpha})`;
-                }
+              if (typeof cell === "string") {
+                // String-based grids (circle/dome/etc.) still use Tailwind borders
+                cellClasses = "border " + cell;
+              } else {
+                // Pixel grids: no extra border so colors don't get washed out at high resolutions
+                const { r, g, b, a } = cell as Pixel;
+                const alpha = a <= 1 ? a : a / 255;
+                style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${alpha})`;
+              }
 
-                return (
-                  <div
-                    key={colIndex}
-                    className={cellClasses}
-                    style={style}
-                  />
-                );
-              })}
-            </div>
-          ))}
-        </div>
-
-        {/* Magnifier */}
-        {magnifierEnabled && magnifierWindow && hoverInfo && magnifierStyle && (
-          <div
-            className="pointer-events-none fixed z-50 rounded-xl border border-slate-700 bg-slate-950/95 p-2 shadow-xl"
-            style={magnifierStyle}
-          >
-            <div className="space-y-[2px]">
-              {magnifierWindow.map((row, rowIndex) => (
-                <div key={rowIndex} className="flex gap-[2px]">
-                  {row.map((cell, colIndex) => {
-                    const style: React.CSSProperties = {
-                      width: zoomBlockSize,
-                      height: zoomBlockSize,
-                    };
-
-                    let cellClasses = "";
-
-                    if (typeof cell === "string") {
-                      // String-based grids keep their border treatment
-                      cellClasses = "border " + cell;
-                    } else {
-                      // Pixel grids: no extra border so the image stays true at high resolution
-                      const { r, g, b, a } = cell as Pixel;
-                      const alpha = a <= 1 ? a : a / 255;
-                      style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${alpha})`;
-                    }
-
-                    return (
-                      <div
-                        key={colIndex}
-                        className={cellClasses}
-                        style={style}
-                      />
-                    );
-                  })}
-                </div>
-              ))}
-            </div>
+              return (
+                <div
+                  key={colIndex}
+                  className={cellClasses}
+                  style={style}
+                />
+              );
+            })}
           </div>
-        )}
+        ))}
       </div>
-    </div>
+
+      {/* Magnifier */}
+      {magnifierEnabled && magnifierWindow && hoverInfo && magnifierStyle && (
+        <div
+          className="pointer-events-none fixed z-50 rounded-xl border border-slate-700 bg-slate-950/95 p-2 shadow-xl"
+          style={magnifierStyle}
+        >
+          <div className="space-y-[2px]">
+            {magnifierWindow.map((row, rowIndex) => (
+              <div key={rowIndex} className="flex gap-[2px]">
+                {row.map((cell, colIndex) => {
+                  const style: React.CSSProperties = {
+                    width: zoomBlockSize,
+                    height: zoomBlockSize,
+                  };
+
+                  let cellClasses = "";
+
+                  if (typeof cell === "string") {
+                    // String-based grids keep their border treatment
+                    cellClasses = "border " + cell;
+                  } else {
+                    // Pixel grids: no extra border so the image stays true at high resolution
+                    const { r, g, b, a } = cell as Pixel;
+                    const alpha = a <= 1 ? a : a / 255;
+                    style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${alpha})`;
+                  }
+
+                  return (
+                    <div
+                      key={colIndex}
+                      className={cellClasses}
+                      style={style}
+                    />
+                  );
+                })}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </FeatureOutputContainer>
   )
 }

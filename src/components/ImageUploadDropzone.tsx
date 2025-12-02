@@ -1,5 +1,6 @@
 import React, { useMemo, useRef, useState } from "react";
 import { useResponsiveDesign } from "../hooks/useResponsiveDesign";
+import InputField from "./InputField";
 
 type ImageUploadDropzoneProps = {
   label?: string;
@@ -89,11 +90,7 @@ export default function ImageUploadDropzone({
   }
 
   return (
-    <div className="flex flex-col gap-2">
-      {label && (
-        <span className="text-sm font-medium text-slate-100">{label}</span>
-      )}
-
+    <InputField label={label}>
       {showPreview && previewUrl ? (
         <div className="flex flex-col gap-2">
           <div style={{ width, maxWidth: width }}>
@@ -156,6 +153,6 @@ export default function ImageUploadDropzone({
           </div>
         </div>
       )}
-    </div>
+    </InputField>
   );
 }
