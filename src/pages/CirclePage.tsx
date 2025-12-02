@@ -1,5 +1,5 @@
 import FeaturePage from "../components/FeaturePage";
-import CircleGenerator from "../features/circle-generator/CircleGridView";
+import CircleGenerator from "../features/circle-generator/CircleGenerator";
 
 export default function CirclePage() {
   return (

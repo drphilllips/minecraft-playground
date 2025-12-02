@@ -1,5 +1,5 @@
 import FeaturePage from "../components/FeaturePage";
-import DomeGenerator from "../features/dome-generator/DomeGridView";
+import DomeGenerator from "../features/dome-generator/DomeGenerator";
 
 export default function DomePage() {
   return (

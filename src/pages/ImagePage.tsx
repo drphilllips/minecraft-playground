@@ -1,4 +1,5 @@
 import FeaturePage from "../components/FeaturePage";
+import ImageTranslator from "../features/image-translator/ImageTranslator";
 
 export default function ImagePage() {
   return (
@@ -8,7 +9,7 @@ export default function ImagePage() {
         Upload an image and adjust resolution to your heart's desire!
       `}
     >
-      {/* insert trnaslator here */}
+      <ImageTranslator />
     </FeaturePage>
   );
 }
