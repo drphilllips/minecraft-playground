@@ -43,7 +43,7 @@ export default function HomePage() {
             name="Image Translator"
             linkToPage="/image"
             description={`
-              Transform any image into a clean, Minecraft‑block blueprint.
+              Transform any image into a clean Minecraft‑block blueprint.
             `}
           >
             <ImagePreview />
