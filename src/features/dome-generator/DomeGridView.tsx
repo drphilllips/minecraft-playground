@@ -7,11 +7,11 @@ import generateDome from "./generateDome";
 import generateDomeSideviewGrid from "./generateDomeSideviewGrid";
 import IntegerSlider from "../../components/IntegerSlider";
 import Separator from "../../components/Separator";
-import InputLabel from "../../components/InputLabel";
+import InputField from "../../components/InputField";
 import { useResponsiveDesign } from "../../hooks/useResponsiveDesign";
 
 
-export default function DomeGridView() {
+export default function DomeGenerator() {
   const { effectiveMaxDiameter, effectiveGridMaxSize } = useResponsiveDesign()
 
   const {
@@ -64,9 +64,7 @@ export default function DomeGridView() {
         maxReachedAlert={`${effectiveMaxDiameter} is the maximum value for this preview.`}
       />
 
-      <div className="flex flex-col">
-        <InputLabel label="Dome-Level Slider" closer />
-
+      <InputField label="Dome-Level Slider" closer>
         <div className="flex flex-row items-center">
           {/* Dome Sideview Grid */}
           <GridView
@@ -88,7 +86,7 @@ export default function DomeGridView() {
             paddingTop={0}
           />
         </div>
-      </div>
+      </InputField>
 
       <div className="flex flex-col gap-3 w-fit">
         <Separator className="w-full" />

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import InputLabel from "./InputLabel";
+import InputField from "./InputField";
 
 
 export default function IntegerInput({
@@ -52,9 +52,7 @@ export default function IntegerInput({
   };
 
   return (
-    <div>
-      <InputLabel label={label} />
-
+    <InputField label={label}>
       <div className="flex items-center gap-4 flex-wrap">
         <button
           onClick={decrement}
@@ -110,6 +108,6 @@ export default function IntegerInput({
           </span>
         )}
       </div>
-    </div>
+    </InputField>
   )
 }

@@ -7,7 +7,7 @@ import Separator from "../../components/Separator";
 import { useResponsiveDesign } from "../../hooks/useResponsiveDesign";
 
 
-export default function CircleGridView() {
+export default function CircleGenerator() {
   const { effectiveMaxDiameter, effectiveGridMaxSize } = useResponsiveDesign()
 
   const {

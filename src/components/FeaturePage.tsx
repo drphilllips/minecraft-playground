@@ -8,7 +8,7 @@ export default function FeaturePage({
 }: {
   name: string;
   description: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }) {
   const { onMobile } = useResponsiveDesign();
 

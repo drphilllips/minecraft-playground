@@ -122,7 +122,7 @@ export default function generateDome(d: number, type: CircularOutputType): Circu
     levelSlice.map(row => [...row])
   );
 
-  if (d >= 5) {
+  if (d >= 2) {
     const isEven = d % 2 === 0;
     const centerCols: number[] = [];
     const centerRows: number[] = [];
