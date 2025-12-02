@@ -69,7 +69,7 @@ export default function ImageTranslator() {
         <ImageUploadDropzone
           key="image"
           label="Source Image"
-          description="Upload any reference image to convert into pixel art."
+          description="Upload any reference image to convert into block art."
           onImageSelected={(file) => setSourceImageFile(file)}
         />,
 
