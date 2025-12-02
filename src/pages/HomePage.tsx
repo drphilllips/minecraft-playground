@@ -2,6 +2,7 @@ import CirclePreview from "../features/previews/CirclePreview";
 import DomePreview from "../features/previews/DomePreview";
 import { useResponsiveDesign } from "../hooks/useResponsiveDesign";
 import FeaturePreview from "../components/FeaturePreview";
+import ImagePreview from "../features/previews/ImagePreview";
 
 export default function HomePage() {
   const { onMobile } = useResponsiveDesign()
@@ -42,10 +43,10 @@ export default function HomePage() {
             name="Image Translator"
             linkToPage="/image"
             description={`
-              Something epic about image translator.
+              Transform any image into a clean, Minecraft‑block blueprint.
             `}
           >
-            {/* insert preview here */}
+            <ImagePreview />
           </FeaturePreview>
         </div>
       </div>

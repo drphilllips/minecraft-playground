@@ -6,7 +6,7 @@ export default function ImagePage() {
     <FeaturePage
       name="Image Translator"
       description={`
-        Upload an image and adjust resolution to your heart's desire!
+        Upload an image, choose your resolution, and watch it turn into block-art magic.
       `}
     >
       <ImageTranslator />
