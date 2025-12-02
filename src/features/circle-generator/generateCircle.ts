@@ -68,7 +68,7 @@ export default function generateCircle(d: number, type: CircularOutputType): Cir
 
   // Third pass: overlay center lines (north-south and east-west)
   const centerLines = outline;
-  if (size >= 5) {
+  if (size >= 2) {
     const isEven = size % 2 === 0;
     const centerCols: number[] = [];
     const centerRows: number[] = [];

@@ -1,5 +1,5 @@
 import FeaturePage from "../components/FeaturePage";
-import DomeGridView from "../features/dome-generator/DomeGridView";
+import DomeGenerator from "../features/dome-generator/DomeGenerator";
 
 export default function DomePage() {
   return (
@@ -9,7 +9,7 @@ export default function DomePage() {
         Choose a diameter and slide through levels to see each 2D slice of your dome.
       `}
     >
-      <DomeGridView />
+      <DomeGenerator />
     </FeaturePage>
   );
 }

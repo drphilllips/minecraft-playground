@@ -3,11 +3,11 @@ import { generateCircleGrid } from "./generateCircleGrid";
 import IntegerInput from "../../components/IntegerInput";
 import GridView from "../../components/GridView";
 import useCircularGridView from "../../hooks/useCircularGridView";
-import Separator from "../../components/Separator";
 import { useResponsiveDesign } from "../../hooks/useResponsiveDesign";
+import FeatureContainer from "../../components/FeatureContainer";
 
 
-export default function CircleGridView() {
+export default function CircleGenerator() {
   const { effectiveMaxDiameter, effectiveGridMaxSize } = useResponsiveDesign()
 
   const {
@@ -28,20 +28,18 @@ export default function CircleGridView() {
   }, [numericDiameter]);
 
   return (
-    <div className="flex flex-col gap-3 bg-slate-800/40 rounded-2xl p-6 border border-slate-700">
-      {/* Diameter Input */}
-      <IntegerInput
-        label="Diameter (positive integer)"
-        value={diameter}
-        onChange={setDiameter}
-        maxValue={effectiveMaxDiameter}
-        maxReachedAlert={`${effectiveMaxDiameter} is the maximum value for this preview.`}
-      />
-
-      <div className="flex flex-col gap-3 w-fit">
-        <Separator className="w-full" />
-
-        {/* Circle Grid */}
+    <FeatureContainer
+      inputFields={[
+        // Diameter Input
+        <IntegerInput
+          label="Diameter (positive integer)"
+          value={diameter}
+          onChange={setDiameter}
+          maxValue={effectiveMaxDiameter}
+          maxReachedAlert={`${effectiveMaxDiameter} is the maximum diameter for this preview.`}
+        />
+      ]}
+      outputDisplay={(
         <GridView
           grid={circleGrid}
           blockSize={blockSize}
@@ -50,7 +48,7 @@ export default function CircleGridView() {
           magnifierEnabled={magnifierEnabled}
           zoomBlockSize={zoomBlockSize}
         />
-      </div>
-    </div>
+      )}
+    />
   )
 }

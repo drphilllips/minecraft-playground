@@ -4,6 +4,7 @@ import CirclePage from "./pages/CirclePage";
 import DomePage from "./pages/DomePage";
 import NavBar from "./components/NavBar";
 import { ResponsiveDesignProvider } from "./contexts/ReponsiveDesignContext";
+import ImagePage from "./pages/ImagePage";
 
 export default function App() {
   return (
@@ -24,6 +25,7 @@ function Routing() {
         <Route path="/" element={<HomePage />} />
         <Route path="/circle" element={<CirclePage />} />
         <Route path="/dome" element={<DomePage />} />
+        <Route path="/image" element={<ImagePage />} />
       </Routes>
     </Router>
   );

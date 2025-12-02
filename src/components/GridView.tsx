@@ -1,6 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react"
+import type React from "react";
 import { BLANK_CELL_STYLE } from "../constants/gridCellStyles";
 import { WEB_DEFAULT_ZOOM_BLOCK_SIZE } from "../constants/responsiveDesign";
+import type { Pixel } from "../types/imageTranslator";
+import FeatureOutputContainer from "./FeatureOutputContainer";
 
 
 const ZOOM_RADIUS = 4;
@@ -13,7 +16,7 @@ export default function GridView({
   magnifierEnabled,
   zoomBlockSize=WEB_DEFAULT_ZOOM_BLOCK_SIZE,
 }: {
-  grid: string[][]
+  grid: string[][] | Pixel[][]
   blockSize: number
   width?: number
   height?: number
@@ -37,16 +40,22 @@ export default function GridView({
   const magnifierWindow = useMemo(() => {
     if (!hoverInfo || !magnifierEnabled || grid.length === 0) return null;
 
+    const isStringGrid = typeof grid[0]?.[0] === "string";
+
     const radius = ZOOM_RADIUS; // window radius around the hovered cell (7x7)
     const height = grid.length;
     const width = grid[0]?.length ?? 0;
-    const windowRows: string[][] = [];
+    const windowRows: (string | Pixel)[][] = [];
 
     for (let y = hoverInfo.row - radius; y <= hoverInfo.row + radius; y++) {
-      const row: string[] = [];
+      const row: (string | Pixel)[] = [];
       for (let x = hoverInfo.col - radius; x <= hoverInfo.col + radius; x++) {
         if (y < 0 || y >= height || x < 0 || x >= width) {
-          row.push(BLANK_CELL_STYLE);
+          if (isStringGrid) {
+            row.push(BLANK_CELL_STYLE);
+          } else {
+            row.push({ r: 0, g: 0, b: 0, a: 0 });
+          }
         } else {
           row.push(grid[y][x]);
         }
@@ -62,10 +71,37 @@ export default function GridView({
       return;
     }
     const rect = ref.current.getBoundingClientRect();
-    const offsetX = e.clientX - rect.left;
-    const offsetY = e.clientY - rect.top;
     const gap = 2;
     const totalSize = blockSize + gap;
+
+    const rows = grid.length;
+    const cols = grid[0]?.length ?? 0;
+
+    // Pixel dimensions of the actual grid content (excluding outer padding)
+    const gridPixelWidth = cols > 0 ? cols * totalSize - gap : 0;
+    const gridPixelHeight = rows > 0 ? rows * totalSize - gap : 0;
+
+    const containerWidth = rect.width;
+    const containerHeight = rect.height;
+
+    // When the grid is centered within a larger container, compute the blank margins
+    const marginX = Math.max(0, (containerWidth - gridPixelWidth) / 2);
+    const marginY = Math.max(0, (containerHeight - gridPixelHeight) / 2);
+
+    // Mouse position relative to the top-left corner of the grid content
+    const offsetX = e.clientX - rect.left - marginX;
+    const offsetY = e.clientY - rect.top - marginY;
+
+    // If the mouse is in the padded area outside the grid content, ignore
+    if (
+      offsetX < 0 ||
+      offsetY < 0 ||
+      offsetX > gridPixelWidth ||
+      offsetY > gridPixelHeight
+    ) {
+      setHoverInfo(null);
+      return;
+    }
 
     const col = Math.floor(offsetX / totalSize);
     const row = Math.floor(offsetY / totalSize);
@@ -121,69 +157,90 @@ export default function GridView({
   }, [ref, zoomBlockSize, magnifierEnabled, magnifierWindow, hoverInfo]);
 
   return (
-    <div className="flex">
-      <div className="flex rounded-2xl border border-slate-700 bg-slate-950/80 p-3">
-        {/* Grid */}
-        <div
-          ref={ref}
-          className="flex items-center justify-center flex-col space-y-[2px]"
-          onMouseMove={handleGridMouseMove}
-          onMouseLeave={() => setHoverInfo(null)}
-          style={{
-            width,
-            height,
-          }}
-        >
-          {grid.map((row, rowIndex) => (
-            <div key={rowIndex} className="flex gap-[2px]">
-              {row.map((cell, colIndex) => {
-                let cellClasses = "border ";
+    <FeatureOutputContainer>
+      {/* Grid */}
+      <div
+        ref={ref}
+        className="flex items-center justify-center flex-col space-y-[2px]"
+        onMouseMove={handleGridMouseMove}
+        onMouseLeave={() => setHoverInfo(null)}
+        style={{
+          width,
+          height,
+        }}
+      >
+        {grid.map((row, rowIndex) => (
+          <div key={rowIndex} className="flex gap-[2px]">
+            {row.map((cell, colIndex) => {
+              const style: React.CSSProperties = {
+                width: blockSize,
+                height: blockSize,
+              };
 
-                cellClasses += cell;
+              let cellClasses = "";
 
-                return (
-                  <div
-                    key={colIndex}
-                    className={cellClasses}
-                    style={{ width: blockSize, height: blockSize }}
-                  />
-                );
-              })}
-            </div>
-          ))}
-        </div>
+              if (typeof cell === "string") {
+                // String-based grids (circle/dome/etc.) still use Tailwind borders
+                cellClasses = "border " + cell;
+              } else {
+                // Pixel grids: no extra border so colors don't get washed out at high resolutions
+                const { r, g, b, a } = cell as Pixel;
+                const alpha = a <= 1 ? a : a / 255;
+                style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${alpha})`;
+              }
 
-        {/* Magnifier */}
-        {magnifierEnabled && magnifierWindow && hoverInfo && magnifierStyle && (
-          <div
-            className="pointer-events-none fixed z-50 rounded-xl border border-slate-700 bg-slate-950/95 p-2 shadow-xl"
-            style={magnifierStyle}
-          >
-            <div className="space-y-[2px]">
-              {magnifierWindow.map((row, rowIndex) => (
-                <div key={rowIndex} className="flex gap-[2px]">
-                  {row.map((cell, colIndex) => {
-                    let cellClasses = "border ";
-
-                    cellClasses += cell
-
-                    return (
-                      <div
-                        key={colIndex}
-                        className={cellClasses}
-                        style={{
-                          width: zoomBlockSize,
-                          height: zoomBlockSize,
-                        }}
-                      />
-                    );
-                  })}
-                </div>
-              ))}
-            </div>
+              return (
+                <div
+                  key={colIndex}
+                  className={cellClasses}
+                  style={style}
+                />
+              );
+            })}
           </div>
-        )}
+        ))}
       </div>
-    </div>
+
+      {/* Magnifier */}
+      {magnifierEnabled && magnifierWindow && hoverInfo && magnifierStyle && (
+        <div
+          className="pointer-events-none fixed z-50 rounded-xl border border-slate-700 bg-slate-950/95 p-2 shadow-xl"
+          style={magnifierStyle}
+        >
+          <div className="space-y-[2px]">
+            {magnifierWindow.map((row, rowIndex) => (
+              <div key={rowIndex} className="flex gap-[2px]">
+                {row.map((cell, colIndex) => {
+                  const style: React.CSSProperties = {
+                    width: zoomBlockSize,
+                    height: zoomBlockSize,
+                  };
+
+                  let cellClasses = "";
+
+                  if (typeof cell === "string") {
+                    // String-based grids keep their border treatment
+                    cellClasses = "border " + cell;
+                  } else {
+                    // Pixel grids: no extra border so the image stays true at high resolution
+                    const { r, g, b, a } = cell as Pixel;
+                    const alpha = a <= 1 ? a : a / 255;
+                    style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${alpha})`;
+                  }
+
+                  return (
+                    <div
+                      key={colIndex}
+                      className={cellClasses}
+                      style={style}
+                    />
+                  );
+                })}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </FeatureOutputContainer>
   )
 }

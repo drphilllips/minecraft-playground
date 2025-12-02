@@ -12,6 +12,9 @@ export default function NavBar() {
       <Link to="/dome" className="mx-3 text-slate-200 hover:text-white">
         Dome
       </Link>
+      <Link to="/image" className="mx-3 text-slate-200 hover:text-white">
+        Image
+      </Link>
     </nav>
   );
 }
