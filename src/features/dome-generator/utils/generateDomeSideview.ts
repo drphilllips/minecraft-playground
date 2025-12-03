@@ -1,4 +1,4 @@
-import type { CircularCellType, CircularOutputType } from "../../types/circularStyle";
+import type { CircularCellType, CircularOutputType } from "../../../types/circularStyle";
 
 
 export default function generateDomeSideview(

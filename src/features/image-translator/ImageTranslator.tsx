@@ -1,14 +1,13 @@
 import { useState, useEffect } from "react";
-import FeatureContainer from "../../components/FeatureContainer";
 import ImageUploadDropzone from "../../components/ImageUploadDropzone";
 import IntegerInput from "../../components/IntegerInput";
 import useCircularGridView from "../../hooks/useCircularGridView";
-import { useResponsiveDesign } from "../../hooks/useResponsiveDesign";
-import generateImageGrid from "./generateImageGrid";
 import GridView from "../../components/GridView";
 import type { Pixel } from "../../types/imageTranslator";
-import FeatureOutputContainer from "../../components/FeatureOutputContainer";
-import loadImageFromFile from "./loadImageFromFile";
+import { FeatureContainer, FeatureOutputContainer } from "../../components/FeaturePage";
+import { useResponsiveDesign } from "../../contexts/useResponsiveDesign";
+import loadImageFromFile from "./utils/loadImageFromFile";
+import generateImageGrid from "./utils/generateImageGrid";
 
 
 export default function ImageTranslator() {
@@ -67,7 +66,7 @@ export default function ImageTranslator() {
       inputFields={[
         // Image Upload
         <ImageUploadDropzone
-          key="image"
+          key="image-upload"
           label="Source Image"
           description="Upload any reference image to convert into block art."
           onImageSelected={(file) => setSourceImageFile(file)}
@@ -75,6 +74,7 @@ export default function ImageTranslator() {
 
         // Resolution Input
         <IntegerInput
+          key="resolution-input"
           label="Resolution (positive integer)"
           value={resolution}
           onChange={setResolution}

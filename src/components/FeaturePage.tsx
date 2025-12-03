@@ -1,4 +1,5 @@
-import { useResponsiveDesign } from "../hooks/useResponsiveDesign";
+import { useResponsiveDesign } from "../contexts/useResponsiveDesign";
+import Separator from "./Separator";
 
 
 export default function FeaturePage({
@@ -24,4 +25,38 @@ export default function FeaturePage({
       </div>
     </div>
   );
+}
+
+export function FeatureContainer({
+  inputFields,
+  outputDisplay,
+}: {
+  inputFields: React.ReactNode[];
+  outputDisplay: React.ReactNode;
+}) {
+  return (
+    <div className="flex flex-col gap-3 bg-slate-800/40 rounded-2xl p-6 border border-slate-700">
+      {inputFields}
+
+      <div className="flex flex-col gap-3 w-fit">
+        <Separator className="w-full" />
+
+        {outputDisplay}
+      </div>
+    </div>
+  )
+}
+
+export function FeatureOutputContainer({
+  children,
+}: {
+  children?: React.ReactNode;
+}) {
+  return (
+    <div className="flex">
+      <div className="flex rounded-2xl border border-slate-700 bg-slate-950/80 p-3">
+        {children}
+      </div>
+    </div>
+  )
 }

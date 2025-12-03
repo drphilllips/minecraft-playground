@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useResponsiveDesign } from "../hooks/useResponsiveDesign";
+import { useResponsiveDesign } from "../contexts/useResponsiveDesign";
 
 export default function IntegerSlider({
   label,

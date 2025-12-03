@@ -1,5 +1,5 @@
-import type { CircularCellType } from "../../types/circularStyle";
-import generateCircle from "../circle-generator/generateCircle";
+import type { CircularCellType } from "../../../types/circularStyle";
+import generateCircle from "../../circle-generator/utils/generateCircle";
 import applyDomeStyling from "./applyDomeStyling";
 import overlayDomeLevelSlice from "./overlayDomeLevelSlice";
 

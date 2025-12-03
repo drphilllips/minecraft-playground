@@ -1,5 +1,5 @@
 import { Link, type To } from "react-router-dom";
-import { useResponsiveDesign } from "../hooks/useResponsiveDesign";
+import { useResponsiveDesign } from "../contexts/useResponsiveDesign";
 
 
 export default function FeaturePreview({

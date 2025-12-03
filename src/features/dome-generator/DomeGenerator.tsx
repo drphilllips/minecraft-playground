@@ -1,14 +1,14 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import GridView from "../../components/GridView";
 import IntegerInput from "../../components/IntegerInput";
 import useCircularGridView from "../../hooks/useCircularGridView";
-import { generateDomeGrid } from "./generateDomeGrid";
-import generateDome from "./generateDome";
-import generateDomeSideviewGrid from "./generateDomeSideviewGrid";
 import IntegerSlider from "../../components/IntegerSlider";
 import InputField from "../../components/InputField";
-import { useResponsiveDesign } from "../../hooks/useResponsiveDesign";
-import FeatureContainer from "../../components/FeatureContainer";
+import { FeatureContainer } from "../../components/FeaturePage";
+import { useResponsiveDesign } from "../../contexts/useResponsiveDesign";
+import generateDome from "./utils/generateDome";
+import { generateDomeGrid } from "./utils/generateDomeGrid";
+import generateDomeSideviewGrid from "./utils/generateDomeSideviewGrid";
 
 
 export default function DomeGenerator() {
@@ -18,6 +18,9 @@ export default function DomeGenerator() {
     diameter,
     setDiameter,
     numericDiameter,
+    level,
+    setLevel,
+    numericLevel,
     blockSize,
     magnifierEnabled,
     zoomBlockSize,
@@ -25,18 +28,6 @@ export default function DomeGenerator() {
     maxDiameter: effectiveMaxDiameter,
     gridMaxSize: effectiveGridMaxSize,
   })
-  const [level, setLevel] = useState("1");
-
-  const numericLevel = useMemo(() => {
-    const n = parseInt(level, 10);
-    if (!Number.isFinite(n) || n <= 0) return null;
-    return Math.min(n, Math.ceil((numericDiameter || 0) / 2));
-  }, [level, numericDiameter]);
-
-  const domeLevelDisplay = useMemo(() => {
-    if (numericLevel == null) return level;
-    return String(numericLevel);
-  }, [numericLevel, level]);
 
   const dome = useMemo(() => {
     if (numericDiameter == null) return [];
@@ -58,6 +49,7 @@ export default function DomeGenerator() {
       inputFields={[
         // Diameter Input
         <IntegerInput
+          key="diameter-input"
           label="Diameter (positive integer)"
           value={diameter}
           onChange={setDiameter}
@@ -66,7 +58,7 @@ export default function DomeGenerator() {
         />,
 
         // Dome-Level Slider
-        <InputField label="Dome-Level Slider" closer>
+        <InputField key="dome-level-slider" label="Dome-Level Slider" closer>
           <div className="flex flex-row items-center">
             {/* Dome Sideview Grid */}
             <GridView
@@ -81,7 +73,7 @@ export default function DomeGenerator() {
             {/* Level Slider with matched height */}
             <IntegerSlider
               label="Level"
-              value={domeLevelDisplay}
+              value={level}
               onChange={setLevel}
               maxValue={Math.ceil((numericDiameter || 0) / 2)}
               height={effectiveGridMaxSize/2}

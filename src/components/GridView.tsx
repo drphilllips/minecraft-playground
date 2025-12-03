@@ -3,7 +3,7 @@ import type React from "react";
 import { BLANK_CELL_STYLE } from "../constants/gridCellStyles";
 import { WEB_DEFAULT_ZOOM_BLOCK_SIZE } from "../constants/responsiveDesign";
 import type { Pixel } from "../types/imageTranslator";
-import FeatureOutputContainer from "./FeatureOutputContainer";
+import { FeatureOutputContainer } from "./FeaturePage";
 
 
 const ZOOM_RADIUS = 4;

@@ -1,5 +1,5 @@
-import { BLANK_CELL_STYLE, DOME_LEVEL_CENTER_LINE_STYLE, DOME_LEVEL_CENTER_OVERLAP_STYLE, DOME_LEVEL_EDGE_STYLE, DOME_OTHER_LEVEL_STYLE } from "../../constants/gridCellStyles";
-import type { CircularCellType } from "../../types/circularStyle";
+import { BLANK_CELL_STYLE, DOME_LEVEL_CENTER_LINE_STYLE, DOME_LEVEL_CENTER_OVERLAP_STYLE, DOME_LEVEL_EDGE_STYLE, DOME_OTHER_LEVEL_STYLE } from "../../../constants/gridCellStyles";
+import type { CircularCellType } from "../../../types/circularStyle";
 
 
 export default function applyDomeStyling(domeGrid: CircularCellType[][]): string[][] {
