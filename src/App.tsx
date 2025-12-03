@@ -5,6 +5,7 @@ import DomePage from "./pages/DomePage";
 import NavBar from "./components/NavBar";
 import { ResponsiveDesignProvider } from "./contexts/ReponsiveDesignContext";
 import ImagePage from "./pages/ImagePage";
+import { useResponsiveDesign } from "./contexts/useResponsiveDesign";
 
 export default function App() {
   return (
@@ -15,11 +16,11 @@ export default function App() {
 }
 
 function Routing() {
+  const { onMobile } = useResponsiveDesign()
+
   return (
     <Router>
-      <div className="sticky top-0 z-50">
-        <NavBar />
-      </div>
+      {!onMobile && <NavBar />}
 
       <Routes>
         <Route path="/" element={<HomePage />} />

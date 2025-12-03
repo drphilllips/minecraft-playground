@@ -9,10 +9,10 @@ export default function HomePage() {
   const { onMobile } = useResponsiveDesign()
 
   return (
-    <div className={`min-h-screen bg-slate-900 text-slate-100 text-center ${onMobile ? "px-2 py-6 overflow-hidden" : "px-10 py-20"}`}>
-      <h1 className="text-5xl font-extrabold tracking-tight">Minecraft Playground</h1>
-      <p className="mt-4 text-lg text-slate-300 max-w-xl mx-auto">
-        Procedural tools and helpers for Minecraft builders.
+    <div className={`min-h-screen bg-slate-900 text-slate-100 text-center ${onMobile ? "px-2 pt-10 overflow-hidden" : "px-10 py-20"}`}>
+      <h1 className={`${onMobile ? "text-4xl" : "text-5xl"} font-extrabold tracking-tight`}>Minecraft Playground</h1>
+      <p className={`${onMobile ? "mt-2" : "mt-4"} text-lg text-slate-300 max-w-xl mx-auto`}>
+        Procedural tools for Minecraft builders.
       </p>
 
       <div className={`${onMobile ? "mt-5" : "mt-12"} flex justify-center`}>

@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useResponsiveDesign } from "../contexts/useResponsiveDesign";
 import Separator from "./Separator";
 
@@ -14,17 +15,41 @@ export default function FeaturePage({
   const { onMobile } = useResponsiveDesign();
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100">
-      <div className={`flex flex-col gap-5 w-full ${onMobile ? "px-4 py-6" : "px-6 py-12"} max-w-4xl mx-auto`}>
-        <div className="flex flex-col gap-3">
-          <h2 className="text-3xl font-bold">{name}</h2>
-          <p className="text-slate-300 max-w-2xl">{description}</p>
-        </div>
+    <>
+      {onMobile && <FeaturePageHeader name={name} />}
+      <div className="min-h-screen bg-slate-900 text-slate-100">
+        <div className={`flex flex-col w-full ${onMobile ? "p-4 gap-4" : "px-6 py-12 gap-5"} max-w-4xl mx-auto`}>
+          <div className="flex flex-col gap-3">
+            {!onMobile && <h2 className="text-3xl font-bold">{name}</h2>}
+            <p className="text-slate-300 max-w-2xl">{description}</p>
+          </div>
 
-        {children}
+          {children}
+        </div>
       </div>
-    </div>
+    </>
   );
+}
+
+export function FeaturePageHeader({
+  name,
+}: {
+  name: string;
+}) {
+  return (
+    <div className="sticky top-0 z-50">
+      <nav className="relative flex flex-row items-center justify-center bg-slate-800 py-6 text-center">
+        <Link
+          to="/"
+          className="absolute left-4 flex flex-row items-center gap-1 text-slate-200 hover:text-white text-lg font-medium"
+        >
+          <span className="text-xl">‹</span>
+          Back
+        </Link>
+        <p className="text-2xl font-bold text-slate-100">{name}</p>
+      </nav>
+    </div>
+  )
 }
 
 export function FeatureContainer({

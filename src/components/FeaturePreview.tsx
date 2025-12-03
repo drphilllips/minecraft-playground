@@ -21,12 +21,12 @@ export default function FeaturePreview({
         to={linkToPage}
         className="block h-full"
       >
-        <div className={`flex ${onMobile ? "flex-row" : "flex-col"} gap-3 h-full bg-slate-800/40 rounded-2xl p-6 border border-slate-700 transition-transform hover:opacity-80 hover:-translate-y-1 active:opacity-70 active:translate-y-0.5 cursor-pointer`}>
+        <div className={`flex ${onMobile ? "flex-row p-4" : "flex-col p-6"} gap-3 h-full bg-slate-800/40 rounded-2xl border border-slate-700 transition-transform hover:opacity-80 hover:-translate-y-1 active:opacity-70 active:translate-y-0.5 cursor-pointer`}>
           <div className={`${onMobile && "flex flex-col"}`}>
             <div className="flex items-baseline justify-between gap-2">
-              <h2 className="text-2xl font-semibold text-left">{name}</h2>
+              <h2 className={`${onMobile ? "text-xl" : "text-2xl"} font-semibold text-left`}>{name}</h2>
             </div>
-            <p className="text-sm text-slate-300 text-left">
+            <p className="text-sm text-slate-300 text-left mt-1">
               {description}
             </p>
           </div>
