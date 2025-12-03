@@ -38,7 +38,7 @@ export function FeaturePageHeader({
 }) {
   return (
     <div className="sticky top-0 z-50">
-      <nav className="relative flex flex-row items-center justify-center bg-slate-800 py-6 text-center">
+      <nav className="relative flex flex-row items-center justify-center bg-slate-800 pt-14 pb-4 text-center">
         <Link
           to="/"
           className="absolute left-4 flex flex-row items-center gap-1 text-slate-200 hover:text-white text-lg font-medium"

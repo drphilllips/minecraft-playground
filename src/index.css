@@ -1,2 +1,29 @@
 /* src/index.css */
 @import "tailwindcss";
+
+html, body {
+  background-color: #0f172b;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+#root {
+  background-color: #0f172b;
+  min-height: 100%;
+}
+
+/* Hide scrollbar for Chrome, Safari, and Edge */
+body::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for Firefox */
+body {
+  scrollbar-width: none;
+}
+
+/* Ensure page is still scrollable */
+html, body {
+  overflow-y: scroll; /* still scrollable without bar */
+}
