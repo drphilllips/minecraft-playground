@@ -9,13 +9,20 @@ export default function HomePage() {
   const { onMobile, isStandalone } = useResponsiveDesign()
 
   return (
-    <div className={`min-h-screen bg-slate-900 text-slate-100 text-center ${onMobile ? (isStandalone ? "px-2 pt-24 overflow-hidden" : "px-2 pt-10 overflow-hidden") : "px-10 pt-20"}`}>
-      <h1 className={`${onMobile ? "text-4xl" : "text-5xl"} font-extrabold tracking-tight`}>Minecraft Playground</h1>
-      <p className={`${onMobile ? "mt-2" : "mt-4"} text-lg text-slate-300 max-w-xl mx-auto`}>
+    <div className={`min-h-screen bg-slate-900 text-slate-100 text-center ${onMobile ? (isStandalone ? "px-2 pt-14 overflow-hidden" : "px-2 overflow-hidden") : "px-10 pt-20"}`}>
+      <div className="flex flex-row w-full justify-center items-center mb-3">
+        <img
+          src="/mp-logo.svg"
+          alt="Minecraft Playground Logo"
+          className="block w-32 h-32 object-contain bg-slate-900"
+        />
+      </div>
+      <h1 className={`${onMobile ? (isStandalone ? "text-4xl" : "text-4xl leading-6") : "text-5xl"} font-extrabold tracking-tight`}>Minecraft Playground</h1>
+      <p className={`${onMobile ? (isStandalone ? "mt-2" : "mt-2") : "mt-4"} text-lg text-slate-300 max-w-xl mx-auto`}>
         Procedural tools for Minecraft builders.
       </p>
 
-      <div className={`${onMobile ? (isStandalone ? "mt-10" : "mt-5") : "mt-12"} flex justify-center`}>
+      <div className={`${onMobile ? (isStandalone ? "mt-6" : "mt-2") : "mt-12"} flex justify-center`}>
         <div className={`w-full max-w-5xl ${onMobile ? "grid grid-cols-1 gap-2" : "grid grid-cols-2 gap-6 [&>*:last-child]:col-span-2 [&>*:last-child]:justify-self-center"} items-stretch`}>
           <BreathingOscillationProvider>
             {/* Circle Generator Preview */}
