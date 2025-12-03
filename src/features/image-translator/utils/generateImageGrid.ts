@@ -1,4 +1,4 @@
-import type { Pixel } from "../../types/imageTranslator";
+import type { Pixel } from "../../../types/imageTranslator";
 import generatePixels from "./generatePixels";
 
 export default async function generateImageGrid(

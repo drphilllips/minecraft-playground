@@ -1,6 +1,7 @@
-import React, { useMemo, useRef, useState } from "react";
-import { useResponsiveDesign } from "../hooks/useResponsiveDesign";
+import React, { useRef, useState } from "react";
 import InputField from "./InputField";
+import { useResponsiveDesign } from "../contexts/useResponsiveDesign";
+import { MOBILE_GRID_MAX_SIZE } from "../constants/responsiveDesign";
 
 type ImageUploadDropzoneProps = {
   label?: string;
@@ -16,11 +17,9 @@ export default function ImageUploadDropzone({
   onImageSelected,
   showPreview = true,
 }: ImageUploadDropzoneProps) {
-  const { onMobile, effectiveGridMaxSize } = useResponsiveDesign();
+  const { onMobile } = useResponsiveDesign();
 
-  const width = useMemo(() => {
-    return onMobile ? effectiveGridMaxSize : effectiveGridMaxSize/2;
-  }, [onMobile, effectiveGridMaxSize])
+  const width = MOBILE_GRID_MAX_SIZE;
 
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [isDragging, setIsDragging] = useState(false);

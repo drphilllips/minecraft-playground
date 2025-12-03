@@ -1,4 +1,4 @@
-import type { Pixel } from "../../types/imageTranslator";
+import type { Pixel } from "../../../types/imageTranslator";
 
 export default async function generatePixels(image: HTMLImageElement | null, resolution: number): Promise<Pixel[][]> {
   if (!image || !Number.isFinite(resolution) || resolution <= 0) {

@@ -1,4 +1,4 @@
-import type { CircularCellType } from "../../types/circularStyle";
+import type { CircularCellType } from "../../../types/circularStyle";
 import applyDomeStyling from "./applyDomeStyling";
 import generateDomeSideview from "./generateDomeSideview";
 

@@ -16,6 +16,7 @@ export default function useCircularGridView({
   enableMagnifierDiameter=40,
 }: UseCircularGridViewOptions) {
   const [diameter, setDiameter] = useState(`${defaultDiameter}`);
+  const [level, setLevel] = useState("1");
 
   useEffect(() => {
     if (parseInt(diameter, 10) > maxDiameter) {
@@ -28,6 +29,12 @@ export default function useCircularGridView({
     if (!Number.isFinite(n) || n <= 0) return null;
     return Math.min(n, maxDiameter);
   }, [diameter, maxDiameter]);
+
+  const numericLevel = useMemo(() => {
+    const n = parseInt(level, 10);
+    if (!Number.isFinite(n) || n <= 0) return null;
+    return Math.min(n, Math.ceil((numericDiameter || 0) / 2));
+  }, [level, numericDiameter]);
 
   const blockSize = useMemo(() => {
     return calculateBlockSize(numericDiameter, gridMaxSize);
@@ -50,6 +57,9 @@ export default function useCircularGridView({
     diameter,
     setDiameter,
     numericDiameter,
+    level,
+    setLevel,
+    numericLevel,
     blockSize,
     magnifierEnabled,
     zoomBlockSize,

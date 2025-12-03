@@ -1,28 +1,32 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import GridView from "../../components/GridView";
-import useCircularGridView from "../../hooks/useCircularGridView";
-import { useResponsiveDesign } from "../../hooks/useResponsiveDesign";
-import { useSharedBreathingPhase } from "../../hooks/useSharedBreathingPhase";
-import generateDome from "../dome-generator/generateDome";
-import { generateDomeGrid } from "../dome-generator/generateDomeGrid";
+import { useResponsiveDesign } from "../../contexts/useResponsiveDesign";
+import { useBreathingPhase } from "../../contexts/useBreathingOscillation";
+import generateDome from "./utils/generateDome";
+import { generateDomeGrid } from "./utils/generateDomeGrid";
+import calculateBlockSize from "../../utils/calculateBlockSize";
 
 
 export default function DomePreview() {
-  const { effectiveMaxDiameter, effectiveGridMaxSize } = useResponsiveDesign()
+  const { effectiveMaxDiameter, effectiveGridMaxSize } = useResponsiveDesign();
+  const breathingPhase = useBreathingPhase();
 
-  const {
-    setDiameter,
-    numericDiameter,
-    blockSize,
-  } = useCircularGridView({
-    maxDiameter: effectiveMaxDiameter/2,
-    gridMaxSize: effectiveGridMaxSize/2,
-    defaultDiameter: 1,
-  })
+  const [diameter, setDiameter] = useState("1");
 
-  const breathingPhase = useSharedBreathingPhase();
+  const numericDiameter = useMemo(() => {
+    const n = parseInt(diameter, 10);
+    if (!Number.isFinite(n) || n <= 0) return null;
+    if (!effectiveMaxDiameter) return n;
 
-  const [phase, setPhase] = useState<"diameter" | "level">("diameter");
+    const maxDiam = effectiveMaxDiameter / 2 - 1;
+    return Math.max(1, Math.min(n, maxDiam));
+  }, [diameter, effectiveMaxDiameter]);
+  const blockSize = useMemo(
+    () => calculateBlockSize(numericDiameter, effectiveGridMaxSize / 2),
+    [numericDiameter, effectiveGridMaxSize]
+  );
+
+  const [animationToggle, setAnimationToggle] = useState<"diameter" | "level">("diameter");
   const [firstDiameterRunDone, setFirstDiameterRunDone] = useState(false);
 
   const [level, setLevel] = useState("1");
@@ -47,10 +51,25 @@ export default function DomePreview() {
   }, [dome, numericLevel]);
 
   useEffect(() => {
+    if (animationToggle !== "diameter") return;
+    if (!effectiveMaxDiameter) return;
+
+    const minDiam = 1;
+    const maxDiam = effectiveMaxDiameter / 2 - 1;
+    const value = minDiam + (maxDiam - minDiam) * breathingPhase;
+
+    let rounded = Math.round(value);
+    if (rounded % 2 === 0) rounded += 1;
+
+    const next = String(Math.max(1, rounded));
+    setTimeout(() => setDiameter(next), 0);
+  }, [animationToggle, breathingPhase, effectiveMaxDiameter]);
+
+  useEffect(() => {
     const TOP = 0.98;
     const BOTTOM = 0.02;
 
-    if (phase !== "diameter") return;
+    if (animationToggle !== "diameter") return;
 
     const atTop = breathingPhase >= TOP;
     const atBottom = breathingPhase <= BOTTOM;
@@ -62,7 +81,7 @@ export default function DomePreview() {
           setFirstDiameterRunDone(true);
           // Reset level phase tracking for a fresh min -> max -> min cycle.
           levelReachedMaxRef.current = false;
-          setPhase("level");
+          setAnimationToggle("level");
         }, 0);
       }
     } else {
@@ -80,18 +99,18 @@ export default function DomePreview() {
           // Prepare level phase for a new min -> max -> min run.
           levelReachedMaxRef.current = false;
           setTimeout(() => {
-            setPhase("level");
+            setAnimationToggle("level");
           }, 0);
         }
       }
     }
-  }, [breathingPhase, phase, firstDiameterRunDone]);
+  }, [breathingPhase, animationToggle, firstDiameterRunDone]);
 
   useEffect(() => {
     const TOP = 0.98;
     const BOTTOM = 0.02;
 
-    if (phase !== "level") return;
+    if (animationToggle !== "level") return;
 
     const atTop = breathingPhase >= TOP;
     const atBottom = breathingPhase <= BOTTOM;
@@ -111,29 +130,16 @@ export default function DomePreview() {
         // Reset diameter tracking for the next diameter phase.
         diameterReachedMinRef.current = false;
         setTimeout(() => {
-          setPhase("diameter");
+          setAnimationToggle("diameter");
         }, 0);
       }
     }
-  }, [breathingPhase, phase]);
+  }, [breathingPhase, animationToggle]);
 
-  // Drive dome diameter from the shared breathing phase when in "diameter" mode.
-  useEffect(() => {
-    if (phase !== "diameter") return;
-    const minDiam = 1;
-    const maxDiam = effectiveMaxDiameter/2-1;
-    const value = minDiam + (maxDiam - minDiam) * breathingPhase; // 0->1->0 mapped to min->max->min
-
-    let rounded = Math.round(value);
-    // Match CirclePreview behavior: force odd diameters
-    if (rounded % 2 === 0) rounded += 1;
-
-    setDiameter(String(rounded));
-  }, [effectiveMaxDiameter, phase, breathingPhase, setDiameter]);
 
   // Drive dome level from the shared breathing phase when in "level" mode.
   useEffect(() => {
-    if (phase !== "level") return;
+    if (animationToggle !== "level") return;
     const minLevel = 1;
     const maxLevel = Math.ceil(effectiveMaxDiameter / 4);
     const invertedPhase = 1 - breathingPhase;
@@ -143,7 +149,7 @@ export default function DomePreview() {
     setTimeout(() => {
       setLevel(String(rounded));
     }, 0);
-  }, [effectiveMaxDiameter, phase, breathingPhase, setLevel]);
+  }, [effectiveMaxDiameter, animationToggle, breathingPhase, setLevel]);
 
   return (
     <GridView

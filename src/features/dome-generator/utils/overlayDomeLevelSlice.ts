@@ -1,4 +1,4 @@
-import type { CircularCellType } from "../../types/circularStyle";
+import type { CircularCellType } from "../../../types/circularStyle";
 
 
 export default function overlayDomeLevelSlice(base: CircularCellType[][], levelSlice: CircularCellType[][]): CircularCellType[][] {

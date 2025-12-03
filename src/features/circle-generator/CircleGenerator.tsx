@@ -1,10 +1,10 @@
 import { useMemo } from "react";
-import { generateCircleGrid } from "./generateCircleGrid";
 import IntegerInput from "../../components/IntegerInput";
 import GridView from "../../components/GridView";
 import useCircularGridView from "../../hooks/useCircularGridView";
-import { useResponsiveDesign } from "../../hooks/useResponsiveDesign";
-import FeatureContainer from "../../components/FeatureContainer";
+import { FeatureContainer } from "../../components/FeaturePage";
+import { useResponsiveDesign } from "../../contexts/useResponsiveDesign";
+import { generateCircleGrid } from "./utils/generateCircleGrid";
 
 
 export default function CircleGenerator() {
@@ -32,6 +32,7 @@ export default function CircleGenerator() {
       inputFields={[
         // Diameter Input
         <IntegerInput
+          key="diameter-input"
           label="Diameter (positive integer)"
           value={diameter}
           onChange={setDiameter}

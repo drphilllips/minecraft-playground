@@ -1,4 +1,4 @@
-import { BLANK_CELL_STYLE, CIRCLE_CENTER_LINE_STYLE, CIRCLE_CENTER_OVERLAP_STYLE, CIRCLE_EDGE_STYLE } from "../../constants/gridCellStyles";
+import { BLANK_CELL_STYLE, CIRCLE_CENTER_LINE_STYLE, CIRCLE_CENTER_OVERLAP_STYLE, CIRCLE_EDGE_STYLE } from "../../../constants/gridCellStyles";
 import generateCircle from "./generateCircle";
 
 
