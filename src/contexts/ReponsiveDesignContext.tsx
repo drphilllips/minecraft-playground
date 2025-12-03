@@ -16,8 +16,13 @@ import {
   MOBILE_MAX_DIAMETER,
 } from "../constants/responsiveDesign";
 
+type NavigatorWithStandalone = Navigator & {
+  standalone?: boolean;
+};
+
 type ResponsiveDesignContextType = {
   onMobile: boolean;
+  isStandalone: boolean;
   viewportWidth: number | null;
   effectiveGridMaxSize: number;
   effectiveMaxDiameter: number;
@@ -27,6 +32,31 @@ const ResponsiveDesignContext = createContext<ResponsiveDesignContextType | null
 
 export function ResponsiveDesignProvider({ children }: { children: ReactNode }) {
   const [viewportWidth, setViewportWidth] = useState<number | null>(null);
+  // inside your ResponsiveDesignProvider or similar
+const [isStandalone, setIsStandalone] = useState<boolean>(() => {
+  if (typeof window === "undefined") return false;
+
+  const nav = window.navigator as NavigatorWithStandalone;
+
+  return (
+    window.matchMedia("(display-mode: standalone)").matches ||
+    // old iOS Safari
+    nav.standalone === true
+  );
+});
+
+useEffect(() => {
+  if (typeof window === "undefined") return;
+
+  const mq = window.matchMedia("(display-mode: standalone)");
+
+  const handler = (e: MediaQueryListEvent) => {
+    setIsStandalone(e.matches);
+  };
+
+  mq.addEventListener("change", handler);
+  return () => mq.removeEventListener("change", handler);
+}, []);
 
   // --- Track viewport width ---
   useEffect(() => {
@@ -76,6 +106,7 @@ export function ResponsiveDesignProvider({ children }: { children: ReactNode }) 
     <ResponsiveDesignContext.Provider
       value={{
         onMobile,
+        isStandalone,
         viewportWidth,
         effectiveGridMaxSize,
         effectiveMaxDiameter,
