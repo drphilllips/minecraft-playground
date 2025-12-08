@@ -1,6 +1,6 @@
-import type { Pixel } from "../../../types/imageTranslator";
+import type { RgbaColor } from "../../../types/color";
 
-export default async function generatePixels(image: HTMLImageElement | null, resolution: number): Promise<Pixel[][]> {
+export default async function generatePixels(image: HTMLImageElement | null, resolution: number): Promise<RgbaColor[][]> {
   if (!image || !Number.isFinite(resolution) || resolution <= 0) {
     return [];
   }
@@ -24,10 +24,10 @@ export default async function generatePixels(image: HTMLImageElement | null, res
     ctx.drawImage(image, 0, 0, targetWidth, targetHeight);
 
     const imageData = ctx.getImageData(0, 0, targetWidth, targetHeight);
-    const pixels: Pixel[][] = [];
+    const pixels: RgbaColor[][] = [];
 
     for (let y = 0; y < targetHeight; y++) {
-      const row: Pixel[] = [];
+      const row: RgbaColor[] = [];
       for (let x = 0; x < targetWidth; x++) {
         const idx = (y * targetWidth + x) * 4;
         const r = imageData.data[idx];
