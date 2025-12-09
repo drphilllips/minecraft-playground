@@ -54,7 +54,7 @@ export default function GridView({
           if (isStringGrid) {
             row.push(BLANK_CELL_STYLE);
           } else {
-            row.push({ r: 0, g: 0, b: 0, a: 0 });
+            row.push({ r: 0, g: 0, b: 0, });
           }
         } else {
           row.push(grid[y][x]);
@@ -184,9 +184,8 @@ export default function GridView({
                 cellClasses = "border " + cell;
               } else {
                 // Pixel grids: no extra border so colors don't get washed out at high resolutions
-                const { r, g, b, a } = cell as RgbColor;
-                const alpha = a <= 1 ? a : a / 255;
-                style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${alpha})`;
+                const { r, g, b } = cell as RgbColor;
+                style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
               }
 
               return (
@@ -223,9 +222,8 @@ export default function GridView({
                     cellClasses = "border " + cell;
                   } else {
                     // Pixel grids: no extra border so the image stays true at high resolution
-                    const { r, g, b, a } = cell as RgbColor;
-                    const alpha = a <= 1 ? a : a / 255;
-                    style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${alpha})`;
+                    const { r, g, b } = cell as RgbColor;
+                    style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
                   }
 
                   return (

@@ -33,8 +33,7 @@ export default async function generatePixels(image: HTMLImageElement | null, res
         const r = imageData.data[idx];
         const g = imageData.data[idx + 1];
         const b = imageData.data[idx + 2];
-        const a = imageData.data[idx + 3] / 255;
-        row.push({ r, g, b, a });
+        row.push({ r, g, b });
       }
       pixels.push(row);
     }
