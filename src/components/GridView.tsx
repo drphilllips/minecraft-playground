@@ -12,6 +12,7 @@ export default function GridView({
   height,
   magnifierEnabled,
   zoomBlockSize=WEB_DEFAULT_ZOOM_BLOCK_SIZE,
+  lite=false,
 }: {
   grid: string[][] | MinecraftBlock[][]
   blockSize: number
@@ -19,6 +20,7 @@ export default function GridView({
   height?: number
   magnifierEnabled: boolean
   zoomBlockSize?: number
+  lite?: boolean
 }) {
   const ref = useRef<HTMLDivElement | null>(null);
 
@@ -179,6 +181,9 @@ export default function GridView({
               if (typeof cell === "string") {
                 // String-based grids (circle/dome/etc.) still use Tailwind borders
                 cellClasses = "border " + cell;
+              } else if (lite && blockSize < 16) {
+                const { r, g, b } = cell.color.rgb;
+                style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
               } else {
                 // Pixel grids: no extra border so colors don't get washed out at high resolutions
                 style.backgroundImage = `url(/textures/blocks/${cell.id}.png)`;

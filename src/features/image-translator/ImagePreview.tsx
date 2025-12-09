@@ -8,7 +8,11 @@ import generateImageGrid from "./utils/generateImageGrid";
 import calculateBlockSize from "../../utils/calculateBlockSize";
 import type { MinecraftBlock } from "./types/minecraftBlock";
 
-export default function ImagePreview() {
+export default function ImagePreview({
+  lite=false,
+}: {
+  lite?: boolean
+}) {
   const sourceImageHTMLElement = useStaticImageElement(defaultImageSrc);
   const { effectiveMaxDiameter: maxResolution, effectiveGridMaxSize } =
     useResponsiveDesign();
@@ -61,6 +65,7 @@ export default function ImagePreview() {
       width={effectiveGridMaxSize / 2}
       height={effectiveGridMaxSize / 2}
       magnifierEnabled={false}
+      lite={lite}
     />
   );
 }

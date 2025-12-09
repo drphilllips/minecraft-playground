@@ -55,7 +55,7 @@ export default function HomePage() {
                 Transform any image into a clean Minecraft‑block blueprint.
               `}
             >
-              <ImagePreview />
+              <ImagePreview lite />
             </FeaturePreview>
           </BreathingOscillationProvider>
         </div>
