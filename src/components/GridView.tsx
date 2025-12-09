@@ -3,7 +3,7 @@ import type React from "react";
 import { BLANK_CELL_STYLE } from "../constants/gridCellStyles";
 import { WEB_DEFAULT_ZOOM_BLOCK_SIZE } from "../constants/responsiveDesign";
 import { FeatureOutputContainer } from "./FeaturePage";
-import type { RgbaColor } from "../types/color";
+import type { RgbColor } from "../features/image-translator/types/color";
 
 
 const ZOOM_RADIUS = 4;
@@ -16,7 +16,7 @@ export default function GridView({
   magnifierEnabled,
   zoomBlockSize=WEB_DEFAULT_ZOOM_BLOCK_SIZE,
 }: {
-  grid: string[][] | RgbaColor[][]
+  grid: string[][] | RgbColor[][]
   blockSize: number
   width?: number
   height?: number
@@ -45,10 +45,10 @@ export default function GridView({
     const radius = ZOOM_RADIUS; // window radius around the hovered cell (7x7)
     const height = grid.length;
     const width = grid[0]?.length ?? 0;
-    const windowRows: (string | RgbaColor)[][] = [];
+    const windowRows: (string | RgbColor)[][] = [];
 
     for (let y = hoverInfo.row - radius; y <= hoverInfo.row + radius; y++) {
-      const row: (string | RgbaColor)[] = [];
+      const row: (string | RgbColor)[] = [];
       for (let x = hoverInfo.col - radius; x <= hoverInfo.col + radius; x++) {
         if (y < 0 || y >= height || x < 0 || x >= width) {
           if (isStringGrid) {
@@ -184,7 +184,7 @@ export default function GridView({
                 cellClasses = "border " + cell;
               } else {
                 // Pixel grids: no extra border so colors don't get washed out at high resolutions
-                const { r, g, b, a } = cell as RgbaColor;
+                const { r, g, b, a } = cell as RgbColor;
                 const alpha = a <= 1 ? a : a / 255;
                 style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${alpha})`;
               }
@@ -223,7 +223,7 @@ export default function GridView({
                     cellClasses = "border " + cell;
                   } else {
                     // Pixel grids: no extra border so the image stays true at high resolution
-                    const { r, g, b, a } = cell as RgbaColor;
+                    const { r, g, b, a } = cell as RgbColor;
                     const alpha = a <= 1 ? a : a / 255;
                     style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${alpha})`;
                   }

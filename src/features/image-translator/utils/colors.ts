@@ -1,19 +1,24 @@
-import type { LabColor, RgbaColor } from "../types/color";
-import type { BlockId, BlockMaterial, MinecraftBlock } from "../types/minecraftBlock";
+import type { BlockId } from "../types/blockId";
+import type { BlockColor, LabColor, RgbColor } from "../types/color";
+import type { BlockMaterial, MinecraftBlock } from "../types/minecraftBlock";
 
-export const mb = (id: BlockId, name: string, color: LabColor, material: BlockMaterial): MinecraftBlock => (
+export const mb = (id: BlockId, name: string, color: BlockColor, material: BlockMaterial[]): MinecraftBlock => (
   { id, name, color, material }
 )
 
-export const rgba = (r: number, g: number, b: number, a: number): RgbaColor => (
-  { r, g, b, a }
+export const c = (rgba: RgbColor, lab: LabColor): BlockColor => (
+  { rgba, lab }
+)
+
+export const rgb = (r: number, g: number, b: number): RgbColor => (
+  { r, g, b }
 )
 
 export const lab = (L: number, a: number, b: number): LabColor => (
   { L, a, b }
 )
 
-export function rgbaToLab(rgbaColor: RgbaColor): LabColor {
+export function rgbaToLab(rgbaColor: RgbColor): LabColor {
   const { r, g, b } = rgbaColor;
 
   // 1. Normalize RGB to [0, 1]
@@ -83,5 +88,5 @@ export function getDominantColor(image: HTMLImageElement | null): LabColor | nul
 
   console.log("#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1));
 
-  return rgbaToLab(rgba(r, g, b, a));
+  return rgbaToLab(rgb(r, g, b));
 }
