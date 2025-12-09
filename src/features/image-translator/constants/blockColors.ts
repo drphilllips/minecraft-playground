@@ -1,4 +1,4 @@
-import type { BlockId } from "../types/blockId";
+import { BLOCK_IDS, type BlockId } from "../types/blockId";
 import type { BlockColor } from "../types/color";
 import { c, lab, rgb } from "../utils/colors";
 
@@ -226,3 +226,8 @@ export const BLOCK_COLORS: Record<BlockId, BlockColor> = {
   yellow_terracotta: c(rgb(185,131,34), lab(58.63,12.45,56.32)),
   yellow_wool: c(rgb(253,211,53), lab(85.89,-0.02,77.01)),
 };
+
+export const BLOCK_LABS = BLOCK_IDS.map(id => ({
+  id,
+  lab: BLOCK_COLORS[id].lab
+}));

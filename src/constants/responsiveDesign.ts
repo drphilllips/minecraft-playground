@@ -6,5 +6,5 @@ export const WEB_GRID_MAX_SIZE = 420; // max pixel width/height for the circle g
 export const MOBILE_GRID_MAX_SIZE = 200;
 export const GRID_MIN_SIZE = 160;
 
-export const WEB_SMALL_ZOOM_BLOCK_SIZE = 8;
-export const WEB_DEFAULT_ZOOM_BLOCK_SIZE = 16;
+export const WEB_SMALL_ZOOM_BLOCK_SIZE = 16;
+export const WEB_DEFAULT_ZOOM_BLOCK_SIZE = 20;

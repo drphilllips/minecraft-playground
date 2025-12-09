@@ -7,7 +7,7 @@ import { FeatureContainer, FeatureOutputContainer } from "../../components/Featu
 import { useResponsiveDesign } from "../../contexts/useResponsiveDesign";
 import loadImageFromFile from "./utils/loadImageFromFile";
 import generateImageGrid from "./utils/generateImageGrid";
-import type { RgbColor } from "./types/color";
+import type { MinecraftBlock } from "./types/minecraftBlock";
 
 
 export default function ImageTranslator() {
@@ -43,7 +43,7 @@ export default function ImageTranslator() {
     return () => { cancelled = true; };
   }, [sourceImageFile]);
 
-  const [imageGrid, setImageGrid] = useState<RgbColor[][]>([]);
+  const [imageGrid, setImageGrid] = useState<MinecraftBlock[][]>([]);
 
   useEffect(() => {
     let cancelled = false;
