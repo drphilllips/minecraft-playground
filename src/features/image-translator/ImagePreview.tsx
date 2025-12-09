@@ -6,7 +6,7 @@ import { useBreathingPhase } from "../../contexts/useBreathingOscillation";
 import { useStaticImageElement } from "./utils/useStaticImageElement";
 import generateImageGrid from "./utils/generateImageGrid";
 import calculateBlockSize from "../../utils/calculateBlockSize";
-import type { RgbColor } from "./types/color";
+import type { MinecraftBlock } from "./types/minecraftBlock";
 
 export default function ImagePreview() {
   const sourceImageHTMLElement = useStaticImageElement(defaultImageSrc);
@@ -31,7 +31,7 @@ export default function ImagePreview() {
     [numericResolution, effectiveGridMaxSize]
   );
 
-  const [imageGrid, setImageGrid] = useState<RgbColor[][]>([]);
+  const [imageGrid, setImageGrid] = useState<MinecraftBlock[][]>([]);
 
   useEffect(() => {
     let cancelled = false;
