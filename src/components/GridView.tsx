@@ -2,11 +2,11 @@ import { useEffect, useMemo, useRef, useState } from "react"
 import type React from "react";
 import { BLANK_CELL_STYLE } from "../constants/gridCellStyles";
 import { WEB_DEFAULT_ZOOM_BLOCK_SIZE } from "../constants/responsiveDesign";
-import type { Pixel } from "../types/imageTranslator";
 import { FeatureOutputContainer } from "./FeaturePage";
+import type { MinecraftBlock } from "../features/image-translator/types/minecraftBlock";
 
 
-const ZOOM_RADIUS = 4;
+const ZOOM_RADIUS = 3;
 
 export default function GridView({
   grid,
@@ -16,7 +16,7 @@ export default function GridView({
   magnifierEnabled,
   zoomBlockSize=WEB_DEFAULT_ZOOM_BLOCK_SIZE,
 }: {
-  grid: string[][] | Pixel[][]
+  grid: string[][] | MinecraftBlock[][]
   blockSize: number
   width?: number
   height?: number
@@ -45,16 +45,16 @@ export default function GridView({
     const radius = ZOOM_RADIUS; // window radius around the hovered cell (7x7)
     const height = grid.length;
     const width = grid[0]?.length ?? 0;
-    const windowRows: (string | Pixel)[][] = [];
+    const windowRows: (string | MinecraftBlock | null)[][] = [];
 
     for (let y = hoverInfo.row - radius; y <= hoverInfo.row + radius; y++) {
-      const row: (string | Pixel)[] = [];
+      const row: (string | MinecraftBlock | null)[] = [];
       for (let x = hoverInfo.col - radius; x <= hoverInfo.col + radius; x++) {
         if (y < 0 || y >= height || x < 0 || x >= width) {
           if (isStringGrid) {
-            row.push(BLANK_CELL_STYLE);
+            row.push(null);
           } else {
-            row.push({ r: 0, g: 0, b: 0, a: 0 });
+            row.push(null);
           }
         } else {
           row.push(grid[y][x]);
@@ -184,9 +184,15 @@ export default function GridView({
                 cellClasses = "border " + cell;
               } else {
                 // Pixel grids: no extra border so colors don't get washed out at high resolutions
-                const { r, g, b, a } = cell as Pixel;
-                const alpha = a <= 1 ? a : a / 255;
-                style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${alpha})`;
+                const { r, g, b } = cell.color.rgb;
+                if (blockSize > 16) {
+                  style.backgroundImage = `url(/textures/blocks/${cell.id}.png)`;
+                  style.backgroundSize = "cover";
+                  style.backgroundRepeat = "no-repeat";
+                  style.imageRendering = "pixelated";
+                } else {
+                  style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+                }
               }
 
               return (
@@ -218,14 +224,17 @@ export default function GridView({
 
                   let cellClasses = "";
 
-                  if (typeof cell === "string") {
+                  if (cell == null) {
+                    cellClasses = "border " + BLANK_CELL_STYLE;
+                  } else if (typeof cell === "string") {
                     // String-based grids keep their border treatment
                     cellClasses = "border " + cell;
                   } else {
                     // Pixel grids: no extra border so the image stays true at high resolution
-                    const { r, g, b, a } = cell as Pixel;
-                    const alpha = a <= 1 ? a : a / 255;
-                    style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${alpha})`;
+                    style.backgroundImage = `url(/textures/blocks/${cell.id}.png)`;
+                    style.backgroundSize = "cover";
+                    style.backgroundRepeat = "no-repeat";
+                    style.imageRendering = "pixelated";
                   }
 
                   return (

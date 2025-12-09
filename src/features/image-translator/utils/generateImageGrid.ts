@@ -1,10 +1,10 @@
-import type { Pixel } from "../../../types/imageTranslator";
+import type { MinecraftBlock } from "../types/minecraftBlock";
 import generatePixels from "./generatePixels";
 
 export default async function generateImageGrid(
   image: HTMLImageElement | null,
   resolution: number
-): Promise<Pixel[][]> {
-  const pixelColors: Pixel[][] = await generatePixels(image, resolution);
+): Promise<MinecraftBlock[][]> {
+  const pixelColors: MinecraftBlock[][] = await generatePixels(image, resolution);
   return pixelColors;
 }

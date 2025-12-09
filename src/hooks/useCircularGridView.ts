@@ -6,14 +6,12 @@ type UseCircularGridViewOptions = {
   maxDiameter: number;
   gridMaxSize: number;
   defaultDiameter?: number;
-  enableMagnifierDiameter?: number;
 };
 
 export default function useCircularGridView({
   maxDiameter,
   gridMaxSize,
   defaultDiameter=17,
-  enableMagnifierDiameter=40,
 }: UseCircularGridViewOptions) {
   const [diameter, setDiameter] = useState(`${defaultDiameter}`);
   const [level, setLevel] = useState("1");
@@ -41,9 +39,8 @@ export default function useCircularGridView({
   }, [numericDiameter, gridMaxSize]);
 
   const magnifierEnabled = useMemo(() => {
-    if (numericDiameter == null) return false;
-    return numericDiameter >= enableMagnifierDiameter;
-  }, [numericDiameter, enableMagnifierDiameter]);
+    return blockSize < 16;
+  }, [blockSize]);
 
   const zoomBlockSize = useMemo(() => {
     if (maxDiameter === MOBILE_MAX_DIAMETER) {

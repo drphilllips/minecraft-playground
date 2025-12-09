@@ -1,12 +1,12 @@
 import defaultImageSrc from "../../assets/earth.jpg";
 import { useEffect, useMemo, useState } from "react";
 import GridView from "../../components/GridView";
-import type { Pixel } from "../../types/imageTranslator";
 import { useResponsiveDesign } from "../../contexts/useResponsiveDesign";
 import { useBreathingPhase } from "../../contexts/useBreathingOscillation";
 import { useStaticImageElement } from "./utils/useStaticImageElement";
 import generateImageGrid from "./utils/generateImageGrid";
 import calculateBlockSize from "../../utils/calculateBlockSize";
+import type { RgbColor } from "./types/color";
 
 export default function ImagePreview() {
   const sourceImageHTMLElement = useStaticImageElement(defaultImageSrc);
@@ -31,7 +31,7 @@ export default function ImagePreview() {
     [numericResolution, effectiveGridMaxSize]
   );
 
-  const [imageGrid, setImageGrid] = useState<Pixel[][]>([]);
+  const [imageGrid, setImageGrid] = useState<RgbColor[][]>([]);
 
   useEffect(() => {
     let cancelled = false;

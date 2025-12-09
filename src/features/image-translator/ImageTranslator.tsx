@@ -3,11 +3,11 @@ import ImageUploadDropzone from "../../components/ImageUploadDropzone";
 import IntegerInput from "../../components/IntegerInput";
 import useCircularGridView from "../../hooks/useCircularGridView";
 import GridView from "../../components/GridView";
-import type { Pixel } from "../../types/imageTranslator";
 import { FeatureContainer, FeatureOutputContainer } from "../../components/FeaturePage";
 import { useResponsiveDesign } from "../../contexts/useResponsiveDesign";
 import loadImageFromFile from "./utils/loadImageFromFile";
 import generateImageGrid from "./utils/generateImageGrid";
+import type { MinecraftBlock } from "./types/minecraftBlock";
 
 
 export default function ImageTranslator() {
@@ -43,7 +43,7 @@ export default function ImageTranslator() {
     return () => { cancelled = true; };
   }, [sourceImageFile]);
 
-  const [imageGrid, setImageGrid] = useState<Pixel[][]>([]);
+  const [imageGrid, setImageGrid] = useState<MinecraftBlock[][]>([]);
 
   useEffect(() => {
     let cancelled = false;

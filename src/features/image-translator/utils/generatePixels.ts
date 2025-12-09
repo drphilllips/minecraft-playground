@@ -1,6 +1,7 @@
-import type { Pixel } from "../../../types/imageTranslator";
+import type { MinecraftBlock } from "../types/minecraftBlock";
+import { findClosestBlock } from "./colorMatching";
 
-export default async function generatePixels(image: HTMLImageElement | null, resolution: number): Promise<Pixel[][]> {
+export default async function generatePixels(image: HTMLImageElement | null, resolution: number): Promise<MinecraftBlock[][]> {
   if (!image || !Number.isFinite(resolution) || resolution <= 0) {
     return [];
   }
@@ -24,17 +25,16 @@ export default async function generatePixels(image: HTMLImageElement | null, res
     ctx.drawImage(image, 0, 0, targetWidth, targetHeight);
 
     const imageData = ctx.getImageData(0, 0, targetWidth, targetHeight);
-    const pixels: Pixel[][] = [];
+    const pixels: MinecraftBlock[][] = [];
 
     for (let y = 0; y < targetHeight; y++) {
-      const row: Pixel[] = [];
+      const row: MinecraftBlock[] = [];
       for (let x = 0; x < targetWidth; x++) {
         const idx = (y * targetWidth + x) * 4;
         const r = imageData.data[idx];
         const g = imageData.data[idx + 1];
         const b = imageData.data[idx + 2];
-        const a = imageData.data[idx + 3] / 255;
-        row.push({ r, g, b, a });
+        row.push(findClosestBlock(r, g, b));
       }
       pixels.push(row);
     }
