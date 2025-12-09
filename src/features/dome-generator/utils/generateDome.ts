@@ -1,7 +1,10 @@
 import type { CircularCellType, CircularOutputType } from "../../../types/circularStyle";
+import type { GenerateDomeOutput } from "../../../types/gridOutput";
 
-export default function generateDome(d: number, type: CircularOutputType): CircularCellType[][][] {
+export default function generateDome(d: number, type: CircularOutputType): GenerateDomeOutput {
   const r = d / 2;
+
+  let num_edge_blocks = 0;
 
   // We only need the upper hemisphere of the sphere to form the dome.
   // `hemisphereStart` is the first z-index where dz >= 0 in the original
@@ -74,7 +77,7 @@ export default function generateDome(d: number, type: CircularOutputType): Circu
   }
 
   if (type === "filled") {
-    return filled;
+    return { space: filled, num_edge_blocks };
   }
 
   // Second pass: shell (outline) using 3D neighbors, but only over
@@ -108,13 +111,14 @@ export default function generateDome(d: number, type: CircularOutputType): Circu
 
         if (isShell) {
           shell[z][y][x] = "edge";
+          num_edge_blocks++;
         }
       }
     }
   }
 
   if (type === "outline") {
-    return shell;
+    return { space: shell, num_edge_blocks };
   }
 
   // Third pass: center lines over the shell, sized to the dome volume.
@@ -159,5 +163,5 @@ export default function generateDome(d: number, type: CircularOutputType): Circu
     }
   }
 
-  return centerLines;
+  return { space: centerLines, num_edge_blocks };
 }

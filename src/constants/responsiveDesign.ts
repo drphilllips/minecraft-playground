@@ -8,3 +8,5 @@ export const GRID_MIN_SIZE = 160;
 
 export const WEB_SMALL_ZOOM_BLOCK_SIZE = 16;
 export const WEB_DEFAULT_ZOOM_BLOCK_SIZE = 20;
+
+export const ZOOM_RADIUS = 3;

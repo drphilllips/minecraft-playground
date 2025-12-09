@@ -4,6 +4,7 @@ import { useResponsiveDesign } from "../../contexts/useResponsiveDesign";
 import { useBreathingPhase } from "../../contexts/useBreathingOscillation";
 import { generateCircleGrid } from "./utils/generateCircleGrid";
 import calculateBlockSize from "../../utils/calculateBlockSize";
+import { BLANK_CIRCLE_OUTPUT } from "../../constants/gridOutput";
 
 
 export default function CirclePreview() {
@@ -28,13 +29,13 @@ export default function CirclePreview() {
   );
 
   const circleGrid = useMemo(() => {
-    if (numericDiameter == null) return [];
+    if (numericDiameter == null) return BLANK_CIRCLE_OUTPUT;
     return generateCircleGrid(numericDiameter);
   }, [numericDiameter]);
 
   return (
     <GridView
-      grid={circleGrid}
+      grid={circleGrid.grid}
       blockSize={blockSize}
       width={effectiveGridMaxSize/2}
       height={effectiveGridMaxSize/2}

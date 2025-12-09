@@ -1,12 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import type React from "react";
 import { BLANK_CELL_STYLE } from "../constants/gridCellStyles";
-import { WEB_DEFAULT_ZOOM_BLOCK_SIZE } from "../constants/responsiveDesign";
+import { WEB_DEFAULT_ZOOM_BLOCK_SIZE, ZOOM_RADIUS } from "../constants/responsiveDesign";
 import { FeatureOutputContainer } from "./FeaturePage";
 import type { MinecraftBlock } from "../features/image-translator/types/minecraftBlock";
-
-
-const ZOOM_RADIUS = 3;
 
 export default function GridView({
   grid,
@@ -184,15 +181,10 @@ export default function GridView({
                 cellClasses = "border " + cell;
               } else {
                 // Pixel grids: no extra border so colors don't get washed out at high resolutions
-                const { r, g, b } = cell.color.rgb;
-                if (blockSize > 16) {
-                  style.backgroundImage = `url(/textures/blocks/${cell.id}.png)`;
-                  style.backgroundSize = "cover";
-                  style.backgroundRepeat = "no-repeat";
-                  style.imageRendering = "pixelated";
-                } else {
-                  style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
-                }
+                style.backgroundImage = `url(/textures/blocks/${cell.id}.png)`;
+                style.backgroundSize = "cover";
+                style.backgroundRepeat = "no-repeat";
+                style.imageRendering = "pixelated";
               }
 
               return (

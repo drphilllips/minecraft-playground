@@ -5,6 +5,7 @@ import useCircularGridView from "../../hooks/useCircularGridView";
 import { FeatureContainer } from "../../components/FeaturePage";
 import { useResponsiveDesign } from "../../contexts/useResponsiveDesign";
 import { generateCircleGrid } from "./utils/generateCircleGrid";
+import { BLANK_CIRCLE_OUTPUT } from "../../constants/gridOutput";
 
 
 export default function CircleGenerator() {
@@ -20,10 +21,11 @@ export default function CircleGenerator() {
   } = useCircularGridView({
     maxDiameter: effectiveMaxDiameter,
     gridMaxSize: effectiveGridMaxSize,
+    defaultDiameter: effectiveMaxDiameter/2,
   })
 
   const circleGrid = useMemo(() => {
-    if (numericDiameter == null) return [];
+    if (numericDiameter == null) return BLANK_CIRCLE_OUTPUT;
     return generateCircleGrid(numericDiameter);
   }, [numericDiameter]);
 
@@ -42,7 +44,7 @@ export default function CircleGenerator() {
       ]}
       outputDisplay={(
         <GridView
-          grid={circleGrid}
+          grid={circleGrid.grid}
           blockSize={blockSize}
           width={effectiveGridMaxSize}
           height={effectiveGridMaxSize}
@@ -50,6 +52,11 @@ export default function CircleGenerator() {
           zoomBlockSize={zoomBlockSize}
         />
       )}
+      outputSummary={
+        <div className="flex flex-row">
+          <p className="text-xl">Num Blocks: {circleGrid.num_edge_blocks}</p>
+        </div>
+      }
     />
   )
 }
