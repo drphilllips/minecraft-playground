@@ -5,6 +5,8 @@ import { useBreathingPhase } from "../../contexts/useBreathingOscillation";
 import generateDome from "./utils/generateDome";
 import { generateDomeGrid } from "./utils/generateDomeGrid";
 import calculateBlockSize from "../../utils/calculateBlockSize";
+import { BLANK_CIRCLE_OUTPUT, BLANK_DOME_OUTPUT } from "../../constants/gridOutput";
+import type { CircularCellType } from "../../types/circularStyle";
 
 
 export default function DomePreview() {
@@ -41,13 +43,13 @@ export default function DomePreview() {
   }, [level, numericDiameter]);
 
   const dome = useMemo(() => {
-    if (numericDiameter == null) return [];
+    if (numericDiameter == null) return BLANK_DOME_OUTPUT;
     return generateDome(numericDiameter, "centerLines");
   }, [numericDiameter])
 
   const domeGrid = useMemo(() => {
-    if (!dome) return [];
-    return generateDomeGrid(dome, numericLevel || 1);
+    if (!dome) return BLANK_CIRCLE_OUTPUT;
+    return generateDomeGrid(dome.space as CircularCellType[][][], numericLevel || 1);
   }, [dome, numericLevel]);
 
   useEffect(() => {
@@ -153,7 +155,7 @@ export default function DomePreview() {
 
   return (
     <GridView
-      grid={domeGrid}
+      grid={domeGrid.grid}
       blockSize={blockSize}
       width={effectiveGridMaxSize/2}
       height={effectiveGridMaxSize/2}

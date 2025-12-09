@@ -9,6 +9,8 @@ import { useResponsiveDesign } from "../../contexts/useResponsiveDesign";
 import generateDome from "./utils/generateDome";
 import { generateDomeGrid } from "./utils/generateDomeGrid";
 import generateDomeSideviewGrid from "./utils/generateDomeSideviewGrid";
+import { BLANK_CIRCLE_OUTPUT, BLANK_DOME_OUTPUT } from "../../constants/gridOutput";
+import type { CircularCellType } from "../../types/circularStyle";
 
 
 export default function DomeGenerator() {
@@ -27,21 +29,22 @@ export default function DomeGenerator() {
   } = useCircularGridView({
     maxDiameter: effectiveMaxDiameter,
     gridMaxSize: effectiveGridMaxSize,
+    defaultDiameter: effectiveMaxDiameter/2,
   })
 
   const dome = useMemo(() => {
-    if (numericDiameter == null) return [];
+    if (numericDiameter == null) return BLANK_DOME_OUTPUT;
     return generateDome(numericDiameter, "centerLines");
   }, [numericDiameter])
 
   const domeGrid = useMemo(() => {
-    if (!dome) return [];
-    return generateDomeGrid(dome, numericLevel || 1);
+    if (!dome) return BLANK_CIRCLE_OUTPUT;
+    return generateDomeGrid(dome.space as CircularCellType[][][], numericLevel || 1);
   }, [dome, numericLevel]);
 
   const domeSideviewGrid = useMemo(() => {
-    if (!dome) return [];
-    return generateDomeSideviewGrid(dome, numericLevel || 1);
+    if (!dome) return BLANK_CIRCLE_OUTPUT;
+    return generateDomeSideviewGrid(dome.space as CircularCellType[][][], numericLevel || 1);
   }, [dome, numericLevel])
 
   return (
@@ -62,7 +65,7 @@ export default function DomeGenerator() {
           <div className="flex flex-row items-center">
             {/* Dome Sideview Grid */}
             <GridView
-              grid={domeSideviewGrid}
+              grid={domeSideviewGrid.grid}
               blockSize={blockSize}
               width={effectiveGridMaxSize}
               height={effectiveGridMaxSize/2}
@@ -84,7 +87,7 @@ export default function DomeGenerator() {
       ]}
       outputDisplay={(
         <GridView
-          grid={domeGrid}
+          grid={domeGrid.grid}
           blockSize={blockSize}
           width={effectiveGridMaxSize}
           height={effectiveGridMaxSize}
@@ -92,6 +95,12 @@ export default function DomeGenerator() {
           zoomBlockSize={zoomBlockSize}
         />
       )}
+      outputSummary={
+        <div className="flex flex-col">
+          <p className="text-xl">Total Blocks: {dome.num_edge_blocks}</p>
+          <p className="text-xl">Level Blocks: {domeGrid.num_edge_blocks}</p>
+        </div>
+      }
     />
   )
 }

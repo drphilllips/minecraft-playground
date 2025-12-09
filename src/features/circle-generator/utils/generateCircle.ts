@@ -1,10 +1,13 @@
 import type { CircularCellType, CircularOutputType } from "../../../types/circularStyle";
+import type { GenerateCircleOutput } from "../../../types/gridOutput";
 
 
-export default function generateCircle(d: number, type: CircularOutputType): CircularCellType[][] {
+export default function generateCircle(d: number, type: CircularOutputType): GenerateCircleOutput {
   const size = Math.max(1, Math.floor(d));
   const r = size / 2;
   const inCircle: boolean[][] = [];
+
+  let num_edge_blocks = 0;
 
   // First pass: determine which cells are inside the circle
   for (let y = 0; y < size; y++) {
@@ -16,15 +19,6 @@ export default function generateCircle(d: number, type: CircularOutputType): Cir
       row.push(distSq <= r * r);
     }
     inCircle.push(row);
-  }
-
-  if (type === "filled") {
-    const filled: CircularCellType[][] = inCircle.map(row => (
-      row.map(cell => (
-        cell ? "body" : "none"
-      ))
-    ))
-    return filled;
   }
 
   // Second pass: mark edge cells only (no filled interior)
@@ -57,13 +51,27 @@ export default function generateCircle(d: number, type: CircularOutputType): Cir
         }
       }
 
-      row.push(isEdge ? "edge" : "none");
+      if (isEdge) {
+        row.push("edge")
+        num_edge_blocks++;
+      } else {
+        row.push("none")
+      }
     }
     outline.push(row);
   }
 
+  if (type === "filled") {
+    const filled: CircularCellType[][] = inCircle.map(row => (
+      row.map(cell => (
+        cell ? "body" : "none"
+      ))
+    ))
+    return { grid: filled, num_edge_blocks };
+  }
+
   if (type === "outline") {
-    return outline;
+    return { grid: outline, num_edge_blocks };
   }
 
   // Third pass: overlay center lines (north-south and east-west)
@@ -103,5 +111,5 @@ export default function generateCircle(d: number, type: CircularOutputType): Cir
     }
   }
 
-  return centerLines
+  return { grid: centerLines, num_edge_blocks }
 }

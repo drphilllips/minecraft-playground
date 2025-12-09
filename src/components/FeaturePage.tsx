@@ -57,18 +57,25 @@ export function FeaturePageHeader({
 export function FeatureContainer({
   inputFields,
   outputDisplay,
+  outputSummary,
 }: {
   inputFields: React.ReactNode[];
   outputDisplay: React.ReactNode;
+  outputSummary?: React.ReactNode;
 }) {
   return (
     <div className="flex flex-col gap-3 bg-slate-800/40 rounded-2xl p-6 border border-slate-700">
       {inputFields}
 
-      <div className="flex flex-col gap-3 w-fit">
-        <Separator className="w-full" />
+      <div className="flex flex-row flex-wrap gap-x-3">
+        <div className="flex flex-col w-fit gap-3">
+          <Separator className="w-full" />
+          {outputDisplay}
+        </div>
 
-        {outputDisplay}
+        <FeatureOutputSummaryContainer>
+          {outputSummary}
+        </FeatureOutputSummaryContainer>
       </div>
     </div>
   )
@@ -82,6 +89,20 @@ export function FeatureOutputContainer({
   return (
     <div className="flex">
       <div className="flex rounded-2xl border border-slate-700 bg-slate-950/80 p-3">
+        {children}
+      </div>
+    </div>
+  )
+}
+
+export function FeatureOutputSummaryContainer({
+  children
+}: {
+  children?: React.ReactNode
+}) {
+  return (
+    <div className="inline-flex h-fit mt-3">
+      <div className="inline-flex h-fit rounded-2xl border border-slate-700 bg-slate-900/60 p-3">
         {children}
       </div>
     </div>
