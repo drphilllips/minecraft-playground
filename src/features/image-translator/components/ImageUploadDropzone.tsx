@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
-import InputField from "./InputField";
-import { useResponsiveDesign } from "../contexts/useResponsiveDesign";
-import { MOBILE_GRID_MAX_SIZE } from "../constants/responsiveDesign";
+import { useResponsiveDesign } from "../../../contexts/useResponsiveDesign";
+import { MOBILE_GRID_MAX_SIZE } from "../../../constants/responsiveDesign";
+import InputField from "../../../components/InputField";
 
 type ImageUploadDropzoneProps = {
   label?: string;
