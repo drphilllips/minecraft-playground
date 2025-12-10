@@ -10,3 +10,5 @@ export const WEB_SMALL_ZOOM_BLOCK_SIZE = 16;
 export const WEB_DEFAULT_ZOOM_BLOCK_SIZE = 20;
 
 export const ZOOM_RADIUS = 3;
+
+export const LITE_RENDER_MIN_BLOCK_SIZE = 8;
