@@ -4,7 +4,7 @@ import IntegerInput from "../../components/IntegerInput";
 import useCircularGridView from "../../hooks/useCircularGridView";
 import IntegerSlider from "../../components/IntegerSlider";
 import InputField from "../../components/InputField";
-import { FeatureContainer } from "../../components/FeaturePage";
+import { FeatureContainer, FeatureOutputSummaryContainer } from "../../components/FeaturePage";
 import { useResponsiveDesign } from "../../contexts/useResponsiveDesign";
 import generateDome from "./utils/generateDome";
 import { generateDomeGrid } from "./utils/generateDomeGrid";
@@ -96,10 +96,12 @@ export default function DomeGenerator() {
         />
       )}
       outputSummary={
-        <div className="flex flex-col">
-          <p className="text-xl">Total Blocks: {dome.num_edge_blocks}</p>
-          <p className="text-xl">Level Blocks: {domeGrid.num_edge_blocks}</p>
-        </div>
+        <FeatureOutputSummaryContainer>
+          <div className="flex flex-col">
+            <p className="text-xl">Total Blocks: {dome.num_edge_blocks}</p>
+            <p className="text-xl">Level Blocks: {domeGrid.num_edge_blocks}</p>
+          </div>
+        </FeatureOutputSummaryContainer>
       }
     />
   )

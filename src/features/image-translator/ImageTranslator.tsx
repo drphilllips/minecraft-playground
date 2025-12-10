@@ -1,13 +1,16 @@
-import { useState, useEffect } from "react";
-import ImageUploadDropzone from "../../components/ImageUploadDropzone";
+import { useState, useEffect, useMemo } from "react";
 import IntegerInput from "../../components/IntegerInput";
 import useCircularGridView from "../../hooks/useCircularGridView";
 import GridView from "../../components/GridView";
-import { FeatureContainer, FeatureOutputContainer } from "../../components/FeaturePage";
+import { FeatureContainer, FeatureOutputContainer, FeatureOutputSummaryContainer } from "../../components/FeaturePage";
 import { useResponsiveDesign } from "../../contexts/useResponsiveDesign";
 import loadImageFromFile from "./utils/loadImageFromFile";
 import generateImageGrid from "./utils/generateImageGrid";
 import type { MinecraftBlock } from "./types/minecraftBlock";
+import ImageUploadDropzone from "./components/ImageUploadDropzone";
+import BlockSummary from "./components/BlockSummary";
+import calculateBlockSummary from "./utils/blockSummary";
+import { hasBlocks } from "../../utils/objectHasValues";
 
 
 export default function ImageTranslator() {
@@ -61,6 +64,11 @@ export default function ImageTranslator() {
     return () => { cancelled = true; };
   }, [sourceImageHTMLElement, numericResolution]);
 
+  const blockSummary = useMemo(() => {
+    if (imageGrid.length === 0) return {};
+    return calculateBlockSummary(imageGrid);
+  }, [imageGrid]);
+
   return (
     <FeatureContainer
       inputFields={[
@@ -105,6 +113,15 @@ export default function ImageTranslator() {
           )}
         </>
       )}
+      outputSummary={
+        <>
+          {hasBlocks(blockSummary) && (
+            <FeatureOutputSummaryContainer>
+              <BlockSummary blockSummary={blockSummary} />
+            </FeatureOutputSummaryContainer>
+          )}
+        </>
+      }
     />
   )
 }
