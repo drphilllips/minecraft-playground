@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import IntegerInput from "../../components/IntegerInput";
 import useCircularGridView from "../../hooks/useCircularGridView";
 import GridView from "../../components/GridView";
-import { FeatureContainer, FeatureOutputContainer } from "../../components/FeaturePage";
+import { FeatureContainer, FeatureOutputContainer, FeatureOutputSummaryContainer } from "../../components/FeaturePage";
 import { useResponsiveDesign } from "../../contexts/useResponsiveDesign";
 import loadImageFromFile from "./utils/loadImageFromFile";
 import generateImageGrid from "./utils/generateImageGrid";
@@ -10,6 +10,7 @@ import type { MinecraftBlock } from "./types/minecraftBlock";
 import ImageUploadDropzone from "./components/ImageUploadDropzone";
 import BlockSummary from "./components/BlockSummary";
 import calculateBlockSummary from "./utils/blockSummary";
+import { hasBlocks } from "../../utils/objectHasValues";
 
 
 export default function ImageTranslator() {
@@ -113,7 +114,13 @@ export default function ImageTranslator() {
         </>
       )}
       outputSummary={
-        <BlockSummary blockSummary={blockSummary} />
+        <>
+          {hasBlocks(blockSummary) && (
+            <FeatureOutputSummaryContainer>
+              <BlockSummary blockSummary={blockSummary} />
+            </FeatureOutputSummaryContainer>
+          )}
+        </>
       }
     />
   )

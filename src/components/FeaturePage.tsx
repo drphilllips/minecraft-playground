@@ -73,9 +73,7 @@ export function FeatureContainer({
           {outputDisplay}
         </div>
 
-        <FeatureOutputSummaryContainer>
-          {outputSummary}
-        </FeatureOutputSummaryContainer>
+        {outputSummary}
       </div>
     </div>
   )

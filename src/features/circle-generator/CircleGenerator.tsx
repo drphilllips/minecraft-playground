@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import IntegerInput from "../../components/IntegerInput";
 import GridView from "../../components/GridView";
 import useCircularGridView from "../../hooks/useCircularGridView";
-import { FeatureContainer } from "../../components/FeaturePage";
+import { FeatureContainer, FeatureOutputSummaryContainer } from "../../components/FeaturePage";
 import { useResponsiveDesign } from "../../contexts/useResponsiveDesign";
 import { generateCircleGrid } from "./utils/generateCircleGrid";
 import { BLANK_CIRCLE_OUTPUT } from "../../constants/gridOutput";
@@ -53,9 +53,9 @@ export default function CircleGenerator() {
         />
       )}
       outputSummary={
-        <div className="flex flex-row">
+        <FeatureOutputSummaryContainer>
           <p className="text-xl">Num Blocks: {circleGrid.num_edge_blocks}</p>
-        </div>
+        </FeatureOutputSummaryContainer>
       }
     />
   )
