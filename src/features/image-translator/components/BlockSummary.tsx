@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useResponsiveDesign } from "../../../contexts/useResponsiveDesign";
 import type { BlockSummary } from "../../../types/gridOutput";
 import { BLOCK_NAMES } from "../constants/blockNames";
@@ -16,10 +16,10 @@ export default function BlockSummary({
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    if (!onMobile) {
+    if (!onMobile || !isOpen) {
       setTimeout(() => setOpenBlockId(null), 0);
     }
-  }, [onMobile]);
+  }, [onMobile, isOpen]);
 
   const entries = Object.entries(blockSummary).filter(([, count]) =>
     typeof count === "number" && count > 0
@@ -30,6 +30,7 @@ export default function BlockSummary({
   }
 
   const totalBlocks = entries.reduce((sum, [, count]) => sum + count, 0);
+  const uniqueBlocks = entries.length;
 
   return (
     <div style={{ width: effectiveGridMaxSize }} className="space-y-2">
@@ -39,12 +40,12 @@ export default function BlockSummary({
         className={`${onMobile ? "active:bg-slate-800/60 active:opacity-90" : "px-3 py-2"} w-full flex items-center justify-between rounded-2xl bg-slate-900/60 hover:bg-slate-800/70 transition-colors duration-200`}
       >
         <span className={`${onMobile ? "text-sm" : "text-lg"} text-left font-semibold text-slate-100`}>
-          Block Summary
+          Blocks
         </span>
         <span
           className={`${onMobile ? "text-sm gap-1" : "text-base gap-2"} text-slate-300 flex items-center justify-end whitespace-nowrap text-right`}
         >
-          {totalBlocks.toLocaleString()} blocks
+          {`${totalBlocks.toLocaleString()}${onMobile ? "" : " total"} / ${uniqueBlocks.toLocaleString()}${onMobile ? "" : " unique"}`}
           <ChevronRight
             className={
               `ml-1 ${onMobile ? "h-4 w-4" : "h-5 w-5"} transition-transform duration-200 ` +
@@ -92,7 +93,7 @@ function SummaryTag({
 
   return (
     <div
-      onClick={onMobile ? onToggle : undefined}
+      onClick={onToggle}
       className="relative group flex items-center w-full h-full cursor-pointer"
     >
       <img
