@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import type React from "react";
 import { BLANK_CELL_STYLE } from "../constants/gridCellStyles";
-import { LITE_RENDER_MIN_BLOCK_SIZE, WEB_DEFAULT_ZOOM_BLOCK_SIZE, ZOOM_RADIUS } from "../constants/responsiveDesign";
+import { WEB_DEFAULT_ZOOM_BLOCK_SIZE, ZOOM_RADIUS } from "../constants/responsiveDesign";
 import { FeatureOutputContainer } from "./FeaturePage";
 import type { MinecraftBlock } from "../features/image-translator/types/minecraftBlock";
 
@@ -181,7 +181,7 @@ export default function GridView({
               if (typeof cell === "string") {
                 // String-based grids (circle/dome/etc.) still use Tailwind borders
                 cellClasses = "border " + cell;
-              } else if (lite && blockSize < LITE_RENDER_MIN_BLOCK_SIZE) {
+              } else if (lite) {
                 const { r, g, b } = cell.color.rgb;
                 style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
               } else {
