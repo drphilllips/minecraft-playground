@@ -12,6 +12,8 @@ import generateDomeSideviewGrid from "./utils/generateDomeSideviewGrid";
 import { BLANK_CIRCLE_OUTPUT, BLANK_DOME_OUTPUT } from "../../constants/gridOutput";
 import type { CircularCellType } from "../../types/circularStyle";
 import BlueprintContainer from "../../components/BlueprintContainer";
+import generateCircularInstructions from "../../utils/generateCircularInstructions";
+import { DOME_CELL_STYLING } from "../../constants/gridCellStyles";
 
 
 export default function DomeGenerator() {
@@ -48,6 +50,11 @@ export default function DomeGenerator() {
     return generateDomeSideviewGrid(dome.space as CircularCellType[][][], numericLevel || 1);
   }, [dome, numericLevel])
 
+  const domeInstructions = useMemo(() => {
+    if (!domeGrid.unstyled) return null;
+    return generateCircularInstructions(domeGrid.unstyled, DOME_CELL_STYLING, "dome-level");
+  }, [domeGrid]);
+
   return (
     <FeatureContainer
       inputFields={[
@@ -80,14 +87,18 @@ export default function DomeGenerator() {
               value={level}
               onChange={setLevel}
               maxValue={Math.ceil((numericDiameter || 0) / 2)}
-              height={effectiveGridMaxSize/2}
+              sliderLength={effectiveGridMaxSize/2}
               paddingTop={0}
             />
           </div>
         </InputField>
       ]}
       outputDisplay={(
-        <BlueprintContainer>
+        <BlueprintContainer
+          blueprintTitle="Dome-Level Blueprint"
+          blueprintSubTitle={`Diameter ${diameter}, Level ${level}`}
+          instructions={domeInstructions}
+        >
           <GridView
             grid={domeGrid.grid}
             blockSize={blockSize}

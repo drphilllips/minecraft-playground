@@ -1,11 +1,20 @@
 import React, { useState } from "react"
 import { ChevronRight } from "lucide-react"
+import type { FullInstructions } from "../types/blueprintInstruction"
+import BlueprintInstructions from "./BlueprintInstructions"
 
-type BlueprintContainerProps = {
+
+export default function BlueprintContainer({
+  blueprintTitle,
+  blueprintSubTitle,
+  instructions,
+  children
+}: {
+  blueprintTitle: string
+  blueprintSubTitle: string
+  instructions: FullInstructions | null
   children: React.ReactNode
-}
-
-export default function BlueprintContainer({ children }: BlueprintContainerProps) {
+}) {
   const [isHovered, setIsHovered] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
 
@@ -90,14 +99,18 @@ export default function BlueprintContainer({ children }: BlueprintContainerProps
             </button>
 
             {/* Placeholder content */}
-            <div className="flex h-full flex-col items-center justify-center gap-3 px-6 text-center">
-              <h2 className="text-lg font-semibold text-sky-100 sm:text-xl">
-                Blueprint Workspace (Coming Soon)
-              </h2>
-              <p className="max-w-xl text-sm text-slate-300 sm:text-base">
-                This modal will become your dedicated blueprint space for advanced Minecraft build
-                planning. For now, it&apos;s just a blank canvas waiting for your next idea.
-              </p>
+            <div className="flex h-full flex-col items-center justify-center py-12 px-4 text-center">
+              {instructions ? (
+                <BlueprintInstructions
+                  title={blueprintTitle}
+                  subTitle={blueprintSubTitle}
+                  instructions={instructions}
+                />
+              ) : (
+                <p className="max-w-xl text-sm text-slate-300 sm:text-base">
+                  No instructions are available at this moment
+                </p>
+              )}
             </div>
           </div>
         </div>

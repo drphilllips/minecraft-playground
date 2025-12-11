@@ -7,6 +7,8 @@ import { useResponsiveDesign } from "../../contexts/useResponsiveDesign";
 import { generateCircleGrid } from "./utils/generateCircleGrid";
 import { BLANK_CIRCLE_OUTPUT } from "../../constants/gridOutput";
 import BlueprintContainer from "../../components/BlueprintContainer";
+import generateCircularInstructions from "../../utils/generateCircularInstructions";
+import { CIRCLE_CELL_STYLING } from "../../constants/gridCellStyles";
 
 
 export default function CircleGenerator() {
@@ -30,6 +32,11 @@ export default function CircleGenerator() {
     return generateCircleGrid(numericDiameter);
   }, [numericDiameter]);
 
+  const circleInstructions = useMemo(() => {
+    if (!circleGrid.unstyled) return null;
+    return generateCircularInstructions(circleGrid.unstyled, CIRCLE_CELL_STYLING, "circle");
+  }, [circleGrid]);
+
   return (
     <FeatureContainer
       inputFields={[
@@ -44,7 +51,11 @@ export default function CircleGenerator() {
         />
       ]}
       outputDisplay={(
-        <BlueprintContainer>
+        <BlueprintContainer
+          blueprintTitle="Circle Blueprint"
+          blueprintSubTitle={`Diameter ${diameter}`}
+          instructions={circleInstructions}
+        >
           <GridView
             grid={circleGrid.grid}
             blockSize={blockSize}
