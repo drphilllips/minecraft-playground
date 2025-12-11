@@ -105,7 +105,7 @@ function SummaryTag({
 
       <div
         className={
-          `pointer-events-none items-center absolute -top-1 left-1/2 -translate-x-1/2 -translate-y-full transition-opacity duration-250 z-50 ` +
+          `pointer-events-none items-center absolute -top-1 left-1/2 -translate-x-1/2 -translate-y-full transition-opacity duration-250 z-30 ` +
           (open ? "opacity-100 group-hover:opacity-100" : "opacity-0 group-hover:opacity-100")
         }
       >
