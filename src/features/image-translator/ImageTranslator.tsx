@@ -11,6 +11,7 @@ import ImageUploadDropzone from "./components/ImageUploadDropzone";
 import BlockSummary from "./components/BlockSummary";
 import calculateBlockSummary from "./utils/blockSummary";
 import { hasBlocks } from "../../utils/objectHasValues";
+import BlueprintContainer from "../../components/BlueprintContainer";
 
 
 export default function ImageTranslator() {
@@ -93,14 +94,16 @@ export default function ImageTranslator() {
       outputDisplay={(
         <>
           {imageGrid.length > 0 ? (
-            <GridView
-              grid={imageGrid}
-              blockSize={blockSize}
-              width={effectiveGridMaxSize}
-              height={effectiveGridMaxSize}
-              magnifierEnabled={magnifierEnabled}
-              zoomBlockSize={zoomBlockSize}
-            />
+            <BlueprintContainer>
+              <GridView
+                grid={imageGrid}
+                blockSize={blockSize}
+                width={effectiveGridMaxSize}
+                height={effectiveGridMaxSize}
+                magnifierEnabled={magnifierEnabled}
+                zoomBlockSize={zoomBlockSize}
+              />
+            </BlueprintContainer>
           ): (
             <FeatureOutputContainer>
               <p

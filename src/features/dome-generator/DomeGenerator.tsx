@@ -11,6 +11,7 @@ import { generateDomeGrid } from "./utils/generateDomeGrid";
 import generateDomeSideviewGrid from "./utils/generateDomeSideviewGrid";
 import { BLANK_CIRCLE_OUTPUT, BLANK_DOME_OUTPUT } from "../../constants/gridOutput";
 import type { CircularCellType } from "../../types/circularStyle";
+import BlueprintContainer from "../../components/BlueprintContainer";
 
 
 export default function DomeGenerator() {
@@ -86,14 +87,16 @@ export default function DomeGenerator() {
         </InputField>
       ]}
       outputDisplay={(
-        <GridView
-          grid={domeGrid.grid}
-          blockSize={blockSize}
-          width={effectiveGridMaxSize}
-          height={effectiveGridMaxSize}
-          magnifierEnabled={magnifierEnabled}
-          zoomBlockSize={zoomBlockSize}
-        />
+        <BlueprintContainer>
+          <GridView
+            grid={domeGrid.grid}
+            blockSize={blockSize}
+            width={effectiveGridMaxSize}
+            height={effectiveGridMaxSize}
+            magnifierEnabled={magnifierEnabled}
+            zoomBlockSize={zoomBlockSize}
+          />
+        </BlueprintContainer>
       )}
       outputSummary={
         <FeatureOutputSummaryContainer>

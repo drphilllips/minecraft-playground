@@ -6,6 +6,7 @@ import { FeatureContainer, FeatureOutputSummaryContainer } from "../../component
 import { useResponsiveDesign } from "../../contexts/useResponsiveDesign";
 import { generateCircleGrid } from "./utils/generateCircleGrid";
 import { BLANK_CIRCLE_OUTPUT } from "../../constants/gridOutput";
+import BlueprintContainer from "../../components/BlueprintContainer";
 
 
 export default function CircleGenerator() {
@@ -43,14 +44,16 @@ export default function CircleGenerator() {
         />
       ]}
       outputDisplay={(
-        <GridView
-          grid={circleGrid.grid}
-          blockSize={blockSize}
-          width={effectiveGridMaxSize}
-          height={effectiveGridMaxSize}
-          magnifierEnabled={magnifierEnabled}
-          zoomBlockSize={zoomBlockSize}
-        />
+        <BlueprintContainer>
+          <GridView
+            grid={circleGrid.grid}
+            blockSize={blockSize}
+            width={effectiveGridMaxSize}
+            height={effectiveGridMaxSize}
+            magnifierEnabled={magnifierEnabled}
+            zoomBlockSize={zoomBlockSize}
+          />
+        </BlueprintContainer>
       )}
       outputSummary={
         <FeatureOutputSummaryContainer>
