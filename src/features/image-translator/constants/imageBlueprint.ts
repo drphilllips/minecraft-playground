@@ -1,0 +1,3 @@
+
+
+export const IMAGE_BLUEPRINT_BG_DISPLAY_RADIUS = 3;

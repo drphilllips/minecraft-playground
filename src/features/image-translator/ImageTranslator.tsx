@@ -97,7 +97,7 @@ export default function ImageTranslator() {
             <BlueprintContainer
               blueprintTitle="Image Blueprint"
               blueprintSubTitle={`Resolution ${resolution}`}
-              instructions={null}
+              imageGrid={imageGrid}
             >
               <GridView
                 grid={imageGrid}
