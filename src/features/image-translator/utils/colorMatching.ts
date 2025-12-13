@@ -1,16 +1,15 @@
-import { BLOCK_LABS } from "../constants/blockColors";
 import { MINECRAFT_BLOCKS } from "../constants/minecraftBlocks";
 import type { BlockId } from "../types/blockId";
 import type { LabColor, RgbColor } from "../types/color";
-import type { MinecraftBlock } from "../types/minecraftBlock";
+import type { BlockLab, MinecraftBlock } from "../types/minecraftBlock";
 
-export function findClosestBlock(r: number, g: number, b: number): MinecraftBlock {
+export function findClosestBlock(blockLabPool: BlockLab[], r: number, g: number, b: number): MinecraftBlock {
   const lab = rgbToLab({ r, g, b });
 
-  let bestId: BlockId = BLOCK_LABS[0].id;
+  let bestId: BlockId = blockLabPool[0].id;
   let bestDist = Infinity;
 
-  for (const block of BLOCK_LABS) {
+  for (const block of blockLabPool) {
     const dist = deltaE(lab, block.lab);
     if (dist < bestDist) {
       bestDist = dist;

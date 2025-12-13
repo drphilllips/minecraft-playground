@@ -1,5 +1,5 @@
 import type { BlockId } from "../types/blockId";
-import type { BlockMaterial } from "../types/minecraftBlock";
+import type { BlockMaterial } from "../types/blockMaterial";
 
 export const BLOCK_MATERIALS: Record<BlockId, BlockMaterial[]> = {
   "acacia_log": ["wood"],

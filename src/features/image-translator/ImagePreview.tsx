@@ -7,6 +7,7 @@ import { useStaticImageElement } from "./utils/useStaticImageElement";
 import generateImageGrid from "./utils/generateImageGrid";
 import calculateBlockSize from "../../utils/calculateBlockSize";
 import type { MinecraftBlock } from "./types/minecraftBlock";
+import { ALL_BLOCK_LABS } from "./constants/blockColors";
 
 export default function ImagePreview({
   lite=false,
@@ -46,6 +47,7 @@ export default function ImagePreview({
         return;
       }
       const result = await generateImageGrid(
+        ALL_BLOCK_LABS,
         sourceImageHTMLElement,
         numericResolution
       );

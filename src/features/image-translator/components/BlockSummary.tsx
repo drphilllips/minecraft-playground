@@ -6,11 +6,19 @@ import type { BlockId } from "../types/blockId";
 import { formatBlockCount } from "../utils/blockSummary";
 import { ChevronRight } from "lucide-react";
 import HoverTagContainer from "../../../components/HoverTagContainer";
+import { BlockFilterButton } from "./BlockFilter";
+import type { BlockFilter } from "../types/blockFilter";
+import BlockTexture from "./BlockTexture";
+import HoverableOpacity from "../../../components/HoverableOpacity";
 
-export default function BlockSummary({
+export default function BlockSummaryView({
   blockSummary,
+  blockFilter,
+  setBlockFilterViewOpen,
 }: {
-  blockSummary: BlockSummary;
+  blockSummary: BlockSummary
+  blockFilter: BlockFilter
+  setBlockFilterViewOpen: (_: boolean) => void
 }) {
   const { onMobile, effectiveGridMaxSize } = useResponsiveDesign();
   const [openBlockId, setOpenBlockId] = useState<BlockId | null>(null);
@@ -35,14 +43,31 @@ export default function BlockSummary({
 
   return (
     <div style={{ width: effectiveGridMaxSize }} className="space-y-2">
-      <button
-        type="button"
-        onClick={() => setIsOpen((prev) => !prev)}
-        className={`${onMobile ? "active:bg-slate-800/60 active:opacity-90" : "px-3 py-2"} w-full flex items-center justify-between rounded-2xl bg-slate-900/60 hover:bg-slate-800/70 transition-colors duration-200`}
+      <HoverableOpacity
+        onPress={() => setIsOpen((prev) => !prev)}
+        className={`
+          ${onMobile ? "rounded-md" : "px-3 py-2 rounded-xl"}
+          w-full flex flex-row items-center gap-2
+          justify-between
+        `}
+        activeColor={onMobile ? "bg-slate-800" : "bg-slate-600"}
+        hoverClass="hover:bg-slate-800/60"
       >
-        <span className={`${onMobile ? "text-sm" : "text-lg"} text-left font-semibold text-slate-100`}>
-          Blocks
-        </span>
+        <div
+          className={`
+            ${onMobile ? "gap-1" : "gap-2"}
+            flex flex-row items-center
+          `}
+        >
+          <span className={`${onMobile ? "text-sm" : "text-lg"} text-left font-semibold text-slate-100`}>
+            Blocks
+          </span>
+          <BlockFilterButton
+            blockFilter={blockFilter}
+            onPress={() => setBlockFilterViewOpen(true)}
+          />
+        </div>
+
         <span
           className={`${onMobile ? "text-sm gap-1" : "text-base gap-2"} text-slate-300 flex items-center justify-end whitespace-nowrap text-right`}
         >
@@ -54,7 +79,7 @@ export default function BlockSummary({
             }
           />
         </span>
-      </button>
+      </HoverableOpacity>
 
       {isOpen && (
         <div
@@ -63,7 +88,7 @@ export default function BlockSummary({
           }
         >
           {entries.map(([blockId, count]) => (
-            <SummaryTag
+            <BlockCount
               key={blockId}
               blockId={blockId as BlockId}
               count={count}
@@ -79,7 +104,7 @@ export default function BlockSummary({
   );
 }
 
-function SummaryTag({
+function BlockCount({
   blockId,
   count,
   hoverActive,
@@ -100,9 +125,8 @@ function SummaryTag({
       hoverSubText={formatBlockCount(count)}
       className="w-full h-full"
     >
-      <img
-        src={`/textures/blocks/${blockId}.png`}
-        alt={blockId}
+      <BlockTexture
+        blockId={blockId}
         className={onMobile ? "w-5 h-5" : "w-8 h-8"}
       />
       <span className={onMobile ? "ml-1 text-sm" : "ml-1 text-lg"}>{count}</span>
