@@ -1,8 +1,9 @@
+import { DOME_CELL_STYLING } from "../../../constants/gridCellStyles";
 import type { CircularCellType } from "../../../types/circularStyle";
 import type { GenerateCircleOutput } from "../../../types/gridOutput";
+import applyCircularCellStyling from "../../../utils/applyCircularCellStyling";
 import { countEdgeCells } from "../../../utils/outputSummary";
 import generateCircle from "../../circle-generator/utils/generateCircle";
-import applyDomeStyling from "./applyDomeStyling";
 import overlayDomeLevelSlice from "./overlayDomeLevelSlice";
 
 
@@ -12,7 +13,7 @@ export function generateDomeGrid(dome: CircularCellType[][][], level: number): G
   const domeLevel = dome[level-1];
   const overlayLevel = overlayDomeLevelSlice(base.grid as CircularCellType[][], domeLevel);
 
-  const styledGrid = applyDomeStyling(overlayLevel);
+  const styledGrid = applyCircularCellStyling(overlayLevel, DOME_CELL_STYLING);
 
   return {
     grid: styledGrid,
