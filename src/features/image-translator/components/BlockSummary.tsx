@@ -42,11 +42,14 @@ export default function BlockSummaryView({
   const uniqueBlocks = entries.length;
 
   return (
-    <div style={{ width: effectiveGridMaxSize }} className="space-y-2">
+    <div
+      style={{ width: effectiveGridMaxSize }}
+      className={`space-y-2 ${isOpen ? (onMobile ? "pb-1" : "pb-2") : ""}`}
+    >
       <HoverableOpacity
         onPress={() => setIsOpen((prev) => !prev)}
         className={`
-          ${onMobile ? "rounded-md" : "px-3 py-2 rounded-xl"}
+          ${onMobile ? "rounded-md" : "px-2 py-1 rounded-lg"}
           w-full flex flex-row items-center gap-2
           justify-between
         `}
@@ -84,7 +87,7 @@ export default function BlockSummaryView({
       {isOpen && (
         <div
           className={
-            (onMobile ? "grid grid-cols-3" : "grid grid-cols-5") + " gap-y-2 gap-x-4"
+            (onMobile ? "grid grid-cols-3" : "grid grid-cols-5 px-2") + " gap-y-2 gap-x-4"
           }
         >
           {entries.map(([blockId, count]) => (

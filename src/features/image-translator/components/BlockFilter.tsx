@@ -237,7 +237,7 @@ export function BlockFilterButton({
       onPress={onPress}
       className={`
         flex flex-row items-center
-        px-1 py-2 gap-1 rounded-lg
+        px-1 py-2 gap-1 rounded-md
       `}
       activeColor="bg-slate-600"
     >
