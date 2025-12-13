@@ -1,5 +1,6 @@
 
 export const SHRINK_STUFF_THRESHOLD = 656;
+export const ON_MOBILE_SIDEWAYS_THRESHOLD = 656;
 export const WEB_MAX_DIAMETER = 100;
 export const MOBILE_MAX_DIAMETER = 50;
 export const WEB_GRID_MAX_SIZE = 420; // max pixel width/height for the circle grid and its container

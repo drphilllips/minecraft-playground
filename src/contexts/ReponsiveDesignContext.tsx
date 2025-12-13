@@ -14,6 +14,7 @@ import {
   GRID_MIN_SIZE,
   WEB_MAX_DIAMETER,
   MOBILE_MAX_DIAMETER,
+  ON_MOBILE_SIDEWAYS_THRESHOLD,
 } from "../constants/responsiveDesign";
 
 type NavigatorWithStandalone = Navigator & {
@@ -22,8 +23,10 @@ type NavigatorWithStandalone = Navigator & {
 
 type ResponsiveDesignContextType = {
   onMobile: boolean;
+  onMobileSideways: boolean;
   isStandalone: boolean;
   viewportWidth: number | null;
+  viewportHeight: number | null;
   effectiveGridMaxSize: number;
   effectiveMaxDiameter: number;
 };
@@ -32,43 +35,45 @@ const ResponsiveDesignContext = createContext<ResponsiveDesignContextType | null
 
 export function ResponsiveDesignProvider({ children }: { children: ReactNode }) {
   const [viewportWidth, setViewportWidth] = useState<number | null>(null);
+  const [viewportHeight, setViewportHeight] = useState<number | null>(null);
   // inside your ResponsiveDesignProvider or similar
-const [isStandalone, setIsStandalone] = useState<boolean>(() => {
-  if (typeof window === "undefined") return false;
+  const [isStandalone, setIsStandalone] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
 
-  const nav = window.navigator as NavigatorWithStandalone;
+    const nav = window.navigator as NavigatorWithStandalone;
 
-  return (
-    window.matchMedia("(display-mode: standalone)").matches ||
-    // old iOS Safari
-    nav.standalone === true
-  );
-});
+    return (
+      window.matchMedia("(display-mode: standalone)").matches ||
+      // old iOS Safari
+      nav.standalone === true
+    );
+  });
 
-useEffect(() => {
-  if (typeof window === "undefined") return;
+  useEffect(() => {
+    if (typeof window === "undefined") return;
 
-  const mq = window.matchMedia("(display-mode: standalone)");
+    const mq = window.matchMedia("(display-mode: standalone)");
 
-  const handler = (e: MediaQueryListEvent) => {
-    setIsStandalone(e.matches);
-  };
+    const handler = (e: MediaQueryListEvent) => {
+      setIsStandalone(e.matches);
+    };
 
-  mq.addEventListener("change", handler);
-  return () => mq.removeEventListener("change", handler);
-}, []);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
 
   // --- Track viewport width ---
   useEffect(() => {
-    const updateWidth = () => {
+    const updateWidthHeight = () => {
       if (typeof window !== "undefined") {
         setViewportWidth(window.innerWidth);
+        setViewportHeight(window.innerHeight);
       }
     };
 
-    updateWidth(); // Initial measurement
-    window.addEventListener("resize", updateWidth);
-    return () => window.removeEventListener("resize", updateWidth);
+    updateWidthHeight(); // Initial measurement
+    window.addEventListener("resize", updateWidthHeight);
+    return () => window.removeEventListener("resize", updateWidthHeight);
   }, []);
 
   // --- Compute effective grid max size ---
@@ -93,6 +98,16 @@ useEffect(() => {
     return false;
   }, [viewportWidth])
 
+  const onMobileSideways = useMemo(() => {
+    if (viewportHeight == null) return false;
+
+    if (viewportHeight < ON_MOBILE_SIDEWAYS_THRESHOLD) {
+      return true;
+    }
+
+    return false;
+  }, [viewportHeight])
+
   // --- Compute allowed max diameter ---
   const effectiveMaxDiameter = useMemo(() => {
     if (viewportWidth == null) return WEB_MAX_DIAMETER;
@@ -106,8 +121,10 @@ useEffect(() => {
     <ResponsiveDesignContext.Provider
       value={{
         onMobile,
+        onMobileSideways,
         isStandalone,
         viewportWidth,
+        viewportHeight,
         effectiveGridMaxSize,
         effectiveMaxDiameter,
       }}

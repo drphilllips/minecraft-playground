@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useResponsiveDesign } from "../../../contexts/useResponsiveDesign";
 import type { BlockSummary } from "../../../types/gridOutput";
 import { BLOCK_NAMES } from "../constants/blockNames";
 import type { BlockId } from "../types/blockId";
 import { formatBlockCount } from "../utils/blockSummary";
 import { ChevronRight } from "lucide-react";
+import HoverTagContainer from "../../../components/HoverTagContainer";
 
 export default function BlockSummary({
   blockSummary,
@@ -16,10 +17,10 @@ export default function BlockSummary({
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    if (!onMobile) {
+    if (!onMobile || !isOpen) {
       setTimeout(() => setOpenBlockId(null), 0);
     }
-  }, [onMobile]);
+  }, [onMobile, isOpen]);
 
   const entries = Object.entries(blockSummary).filter(([, count]) =>
     typeof count === "number" && count > 0
@@ -30,6 +31,7 @@ export default function BlockSummary({
   }
 
   const totalBlocks = entries.reduce((sum, [, count]) => sum + count, 0);
+  const uniqueBlocks = entries.length;
 
   return (
     <div style={{ width: effectiveGridMaxSize }} className="space-y-2">
@@ -39,12 +41,12 @@ export default function BlockSummary({
         className={`${onMobile ? "active:bg-slate-800/60 active:opacity-90" : "px-3 py-2"} w-full flex items-center justify-between rounded-2xl bg-slate-900/60 hover:bg-slate-800/70 transition-colors duration-200`}
       >
         <span className={`${onMobile ? "text-sm" : "text-lg"} text-left font-semibold text-slate-100`}>
-          Block Summary
+          Blocks
         </span>
         <span
           className={`${onMobile ? "text-sm gap-1" : "text-base gap-2"} text-slate-300 flex items-center justify-end whitespace-nowrap text-right`}
         >
-          {totalBlocks.toLocaleString()} blocks
+          {`${totalBlocks.toLocaleString()}${onMobile ? "" : " total"} / ${uniqueBlocks.toLocaleString()}${onMobile ? "" : " unique"}`}
           <ChevronRight
             className={
               `ml-1 ${onMobile ? "h-4 w-4" : "h-5 w-5"} transition-transform duration-200 ` +
@@ -65,7 +67,7 @@ export default function BlockSummary({
               key={blockId}
               blockId={blockId as BlockId}
               count={count}
-              open={openBlockId === blockId}
+              hoverActive={openBlockId === blockId}
               onToggle={() =>
                 setOpenBlockId((prev) => (prev === blockId ? null : (blockId as BlockId)))
               }
@@ -80,20 +82,23 @@ export default function BlockSummary({
 function SummaryTag({
   blockId,
   count,
-  open,
+  hoverActive,
   onToggle,
 }: {
   blockId: BlockId;
   count: number;
-  open: boolean;
+  hoverActive: boolean;
   onToggle: () => void;
 }) {
   const { onMobile } = useResponsiveDesign();
 
   return (
-    <div
-      onClick={onMobile ? onToggle : undefined}
-      className="relative group flex items-center w-full h-full cursor-pointer"
+    <HoverTagContainer
+      onToggle={onToggle}
+      hoverActive={hoverActive}
+      hoverText={BLOCK_NAMES[blockId as BlockId]}
+      hoverSubText={formatBlockCount(count)}
+      className="w-full h-full"
     >
       <img
         src={`/textures/blocks/${blockId}.png`}
@@ -101,22 +106,6 @@ function SummaryTag({
         className={onMobile ? "w-5 h-5" : "w-8 h-8"}
       />
       <span className={onMobile ? "ml-1 text-sm" : "ml-1 text-lg"}>{count}</span>
-
-      <div
-        className={
-          `pointer-events-none items-center absolute -top-1 left-1/2 -translate-x-1/2 -translate-y-full transition-opacity duration-250 z-50 ` +
-          (open ? "opacity-100 group-hover:opacity-100" : "opacity-0 group-hover:opacity-100")
-        }
-      >
-        <div className="w-full flex flex-col items-center justify-center text-center rounded-2xl border border-slate-700 bg-slate-950/90 px-3 py-2 shadow-lg">
-          <p className={`${onMobile ? "text-xs" : "text-sm"} font-semibold text-slate-100`}>
-            {BLOCK_NAMES[blockId as BlockId]}
-          </p>
-          <p className={`${onMobile ? "text-xs" : "text-sm"} text-slate-300 whitespace-nowrap text-center`}>
-            {formatBlockCount(count)}
-          </p>
-        </div>
-      </div>
-    </div>
+    </HoverTagContainer>
   )
 }

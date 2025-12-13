@@ -14,5 +14,9 @@ export function generateDomeGrid(dome: CircularCellType[][][], level: number): G
 
   const styledGrid = applyDomeStyling(overlayLevel);
 
-  return { grid: styledGrid, num_edge_blocks: countEdgeCells(domeLevel) };
+  return {
+    grid: styledGrid,
+    num_edge_blocks: countEdgeCells(domeLevel),
+    unstyled: overlayLevel,
+  };
 }

@@ -1,4 +1,5 @@
 import { BLANK_CELL_STYLE, CIRCLE_CENTER_LINE_STYLE, CIRCLE_CENTER_OVERLAP_STYLE, CIRCLE_EDGE_STYLE } from "../../../constants/gridCellStyles";
+import type { CircularCellType } from "../../../types/circularStyle";
 import type { GenerateCircleOutput } from "../../../types/gridOutput";
 import generateCircle from "./generateCircle";
 
@@ -23,5 +24,9 @@ export function generateCircleGrid(d: number): GenerateCircleOutput {
     })
   );
 
-  return { grid: styledGrid, num_edge_blocks: circleWithCenterLines.num_edge_blocks };
+  return {
+    grid: styledGrid,
+    num_edge_blocks: circleWithCenterLines.num_edge_blocks,
+    unstyled: circleWithCenterLines.grid as CircularCellType[][]
+  };
 }
