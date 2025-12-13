@@ -5,12 +5,14 @@ export default function HoverableOpacity({
   onPress,
   children,
   activeColor,
+  activeClass,
   hoverClass,
   className,
 }: {
   onPress?: () => void
   children?: React.ReactNode
   activeColor?: string
+  activeClass?: string
   hoverClass?: string
   className?: string
 }) {
@@ -29,10 +31,11 @@ export default function HoverableOpacity({
       }}
       className={`
         ${onMobile
-          ? `active:${activeColor}/60 active-opacity-80`
+          ? activeClass ? activeClass : `active:${activeColor}/60 active-opacity-80`
           : hoverClass ? hoverClass : `hover:${activeColor}/60`
         }
-        transition-colors duration-200 z-10
+        ${onPress ? "select-none cursor-pointer" : ""}
+        transition-colors duration-200
         ${className}
       `}
     >

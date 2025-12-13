@@ -18,6 +18,8 @@ import FeatureModal from "../../components/FeatureModal";
 import BlockFilterView from "./components/BlockFilter";
 import { applyBlockFilter } from "./utils/applyBlockFilter";
 import BlankLabel from "../../components/Label";
+import type { BlockId } from "./types/blockId";
+import type { BlockMaterial } from "./types/blockMaterial";
 
 
 export default function ImageTranslator() {
@@ -87,6 +89,22 @@ export default function ImageTranslator() {
     return calculateBlockSummary(imageGrid);
   }, [imageGrid]);
 
+  function removeBlock(blockId: BlockId) {
+    setBlockFilter(prev => ({
+      ...prev,
+      removeBlocks: [...(prev.removeBlocks || []), blockId]
+    }))
+  }
+
+  function removeMaterialFilter(remove: BlockMaterial) {
+    setBlockFilter(prev => ({
+      ...prev,
+      materials: prev.materials?.filter(
+        material => material !== remove
+      )
+    }));
+  }
+
   return (
     <FeatureContainer
       inputFields={[
@@ -143,6 +161,8 @@ export default function ImageTranslator() {
                 blockSummary={blockSummary}
                 blockFilter={blockFilter}
                 setBlockFilterViewOpen={setBlockFilterViewOpen}
+                onRemoveBlock={removeBlock}
+                removeMaterialFilter={removeMaterialFilter}
               />
             </FeatureOutputSummaryContainer>
           )}
