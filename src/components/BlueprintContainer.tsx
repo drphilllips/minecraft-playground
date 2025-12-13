@@ -23,6 +23,8 @@ export default function BlueprintContainer({
   imageGrid?: MinecraftBlock[][]
   children: React.ReactNode
 }) {
+  const { onMobile } = useResponsiveDesign();
+
   const [isHovered, setIsHovered] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
 
@@ -99,7 +101,13 @@ export default function BlueprintContainer({
           <div className="relative flex flex-col w-[92vw] max-w-5xl h-[80vh] rounded-2xl border border-sky-500/70 bg-slate-900 shadow-2xl shadow-sky-500/30">
             <div className="relative flex flex-row w-full items-center">
               {/* Title & Subtitle */}
-              <div className="inline-flex flex-col gap-1 items-center w-fit mx-auto pt-12 pb-4">
+              <div
+                className={`
+                  inline-flex flex-col gap-1 items-center
+                  w-fit mx-auto pb-2
+                  ${onMobile ? "pt-12" : "pt-4"}
+                `}
+              >
                 <h2 className="text-3xl font-bold text-slate-100 tracking-tight text-center">
                   {blueprintTitle}
                 </h2>
@@ -121,7 +129,7 @@ export default function BlueprintContainer({
             </div>
 
             {/* Placeholder content */}
-            <div className="flex-1 min-h-0 flex flex-col items-center justify-start px-4 text-center">
+            <div className="flex-1 min-h-0 flex flex-col items-center justify-start text-center">
               {(instructions || imageGrid) ? (
                 <BlueprintInstructions
                   instructions={instructions}
@@ -147,7 +155,7 @@ function BlueprintInstructions({
   instructions?: BlueprintCircularInstructions | null
   imageGrid?: MinecraftBlock[][]
 }) {
-  const { onMobile, effectiveMaxDiameter, effectiveGridMaxSize } = useResponsiveDesign()
+  const { onMobile, onMobileSideways, effectiveMaxDiameter, effectiveGridMaxSize } = useResponsiveDesign()
 
   const {
     blockSize,
@@ -197,10 +205,11 @@ function BlueprintInstructions({
   return (
     <div className="flex flex-col w-full h-full justify-start items-center overflow-y-auto">
       <div className={`
-        sticky top-2 z-10 w-fit mx-auto
+        ${onMobileSideways ? "mt-2" : "sticky top-2"} z-40 w-fit mx-auto
         bg-slate-800/95 backdrop-blur-sm
-        py-2 px-4 rounded-xl shadow-md shadow-sky-900/30
-        flex flex-col justify-center gap-4 items-center
+        py-2 rounded-xl shadow-md shadow-sky-900/30
+        flex flex-col justify-center items-center gap-2
+        ${onMobile ? "px-2" : "px-4"}
       `}>
         <IntegerSlider
           horizontal
@@ -221,13 +230,13 @@ function BlueprintInstructions({
           </p>
         )}
       </div>
-      <div className="flex flex-col pt-8 pb-12 items-center gap-5">
+      <div className={`flex flex-col pt-8 pb-12 items-center gap-5 ${onMobileSideways ? "" : "mt-2"}`}>
         {imageGrid && (
           <ImageBlueprintGridView
             grid={imageGrid}
             highlightedColumnIndex={(numericStep || 1)-1}
             blockSize={onMobile ? 24 : 32}
-            backgroundOpacity={0.3}
+            backgroundOpacity={0.25}
           />
         )}
         {instructions && stepGrid && (

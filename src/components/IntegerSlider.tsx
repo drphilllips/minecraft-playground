@@ -75,7 +75,7 @@ export default function IntegerSlider({
           {showButtons && (
             <button
               onClick={decrement}
-              className="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 transition text-lg"
+              className="px-4 rounded-lg bg-slate-700 hover:bg-slate-600 transition text-lg"
             >
               -
             </button>
@@ -97,7 +97,7 @@ export default function IntegerSlider({
           {showButtons && (
             <button
               onClick={increment}
-              className="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 transition text-lg"
+              className="px-4 rounded-lg bg-slate-700 hover:bg-slate-600 transition text-lg"
             >
               +
             </button>

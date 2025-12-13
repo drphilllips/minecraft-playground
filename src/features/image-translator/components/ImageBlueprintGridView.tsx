@@ -1,10 +1,11 @@
 import { useMemo } from "react";
 import type { MinecraftBlock } from "../types/minecraftBlock";
 import indexGridByColumns from "../utils/indexGridByColumns";
-import { IMAGE_BLUEPRINT_BG_DISPLAY_RADIUS } from "../constants/imageBlueprint";
+import { IMAGE_BLUEPRINT_MOBILE_BG_DISPLAY_RADIUS, IMAGE_BLUEPRINT_MOBILE_FONT_SIZE, IMAGE_BLUEPRINT_MOBILE_LINE_HEIGHT, IMAGE_BLUEPRINT_MOBILE_VERBOSE_WIDTH, IMAGE_BLUEPRINT_WEB_BG_DISPLAY_RADIUS, IMAGE_BLUEPRINT_WEB_FONT_SIZE, IMAGE_BLUEPRINT_WEB_LINE_HEIGHT, IMAGE_BLUEPRINT_WEB_VERBOSE_WIDTH } from "../constants/imageBlueprint";
 import { FeatureOutputContainer } from "../../../components/FeaturePage";
 import { BlockGrid } from "../../../components/GridView";
 import { useResponsiveDesign } from "../../../contexts/useResponsiveDesign";
+import type { ImageBlueprintBlockGroupInfo } from "../types/imageBlueprint";
 
 
 export default function ImageBlueprintGridView({
@@ -18,14 +19,22 @@ export default function ImageBlueprintGridView({
   highlightedColumnIndex: number
   backgroundOpacity?: number
 }) {
+  const { onMobile } = useResponsiveDesign();
+
   const gridByColumns = useMemo(() => indexGridByColumns(grid), [grid]);
+
+  const backgroundDisplayRadius = useMemo(() => (
+    onMobile
+    ? IMAGE_BLUEPRINT_MOBILE_BG_DISPLAY_RADIUS
+    : IMAGE_BLUEPRINT_WEB_BG_DISPLAY_RADIUS
+  ), [onMobile])
 
   const leftBackgroundGrid = useMemo(() => (
     gridByColumns.slice(
-      Math.max(0, highlightedColumnIndex-IMAGE_BLUEPRINT_BG_DISPLAY_RADIUS),
+      Math.max(0, highlightedColumnIndex-backgroundDisplayRadius),
       highlightedColumnIndex,
     )
-  ), [gridByColumns, highlightedColumnIndex])
+  ), [gridByColumns, highlightedColumnIndex, backgroundDisplayRadius])
 
   const highlightedColumnGrid = useMemo(() => (
     [gridByColumns[highlightedColumnIndex]]
@@ -34,9 +43,9 @@ export default function ImageBlueprintGridView({
   const rightBackgroundGrid = useMemo(() => (
     gridByColumns.slice(
       highlightedColumnIndex+1,
-      Math.min(gridByColumns.length, highlightedColumnIndex+1+IMAGE_BLUEPRINT_BG_DISPLAY_RADIUS),
+      Math.min(gridByColumns.length, highlightedColumnIndex+1+backgroundDisplayRadius),
     )
-  ), [gridByColumns, highlightedColumnIndex])
+  ), [gridByColumns, highlightedColumnIndex, backgroundDisplayRadius])
 
   const lastColumnHighlighted = useMemo(() => (
     highlightedColumnIndex === gridByColumns.length-1
@@ -44,13 +53,13 @@ export default function ImageBlueprintGridView({
 
   return (
     <FeatureOutputContainer>
-      <BlockGrid
-        grid={leftBackgroundGrid}
-        blockSize={blockSize}
-        indexedByColumn
-        opacity={backgroundOpacity}
-      />
-      <div className="flex flex-row px-[2px]">
+      <div className="flex flex-row gap-[2px]">
+        <BlockGrid
+          grid={leftBackgroundGrid}
+          blockSize={blockSize}
+          indexedByColumn
+          opacity={backgroundOpacity}
+        />
         <BlockGrid
           grid={highlightedColumnGrid}
           blockSize={blockSize}
@@ -61,13 +70,13 @@ export default function ImageBlueprintGridView({
           blockSize={blockSize}
           lastColumn={lastColumnHighlighted}
         />
+        <BlockGrid
+          grid={rightBackgroundGrid}
+          blockSize={blockSize}
+          indexedByColumn
+          opacity={backgroundOpacity}
+        />
       </div>
-      <BlockGrid
-        grid={rightBackgroundGrid}
-        blockSize={blockSize}
-        indexedByColumn
-        opacity={backgroundOpacity}
-      />
     </FeatureOutputContainer>
   )
 }
@@ -83,12 +92,30 @@ function BlockVerbose({
 }) {
   const { onMobile } = useResponsiveDesign();
 
+  const width = useMemo(() => (
+    onMobile
+    ? IMAGE_BLUEPRINT_MOBILE_VERBOSE_WIDTH
+    : IMAGE_BLUEPRINT_WEB_VERBOSE_WIDTH
+  ), [onMobile]);
+
+  const fontSize = useMemo(() => (
+    onMobile
+    ? IMAGE_BLUEPRINT_MOBILE_FONT_SIZE
+    : IMAGE_BLUEPRINT_WEB_FONT_SIZE
+  ), [onMobile]);
+
+  const lineHeight = useMemo(() => (
+    onMobile
+    ? IMAGE_BLUEPRINT_MOBILE_LINE_HEIGHT
+    : IMAGE_BLUEPRINT_WEB_LINE_HEIGHT
+  ), [onMobile]);
+
   if (!grid || grid.length === 0) return null;
 
   const column = grid[0] ?? [];
 
   // Group consecutive identical blocks (by id or name) into runs
-  const groups: { block: MinecraftBlock; count: number }[] = [];
+  const groups: ImageBlueprintBlockGroupInfo[] = [];
   for (let i = 0; i < column.length; i++) {
     const curr = column[i];
     const currKey = curr?.id ?? curr?.name ?? "";
@@ -116,20 +143,33 @@ function BlockVerbose({
             className={`
               border-y border-r border-slate-700
               bg-slate-900/80 text-slate-100
-              flex items-start truncate
+              flex items-start
               ${(lastColumn && groupIndex === 0) && "rounded-tr-lg"}
               ${(lastColumn && groupIndex === groups.length - 1) && "rounded-br-lg"}
             `}
             style={{
-              padding: blockSize / 4,
               height: groupHeight,
               minHeight: groupHeight,
-              fontSize: onMobile ? 8 : 12,
-              lineHeight: onMobile ? "12px" : "16px" // matches roughly 1.5 / 1.333 ratios
+              fontSize,
+              lineHeight,
             }}
           >
-            {block?.name ?? ""}
-            {count > 1 ? ` x ${count}` : ""}
+            <div
+              className="flex flex-row justify-start items-center px-1"
+              style={{ height: blockSize }}
+            >
+              <span
+                className="inline-block truncate text-start"
+                style={{ width, maxWidth: width }}
+              >
+                {block.name}
+              </span>
+              {count > 1 && (
+                <span className="ml-1 whitespace-nowrap">
+                  {`x ${count}`}
+                </span>
+              )}
+            </div>
           </div>
         );
       })}

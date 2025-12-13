@@ -9,7 +9,7 @@ export default function HomePage() {
   const { onMobile, isStandalone } = useResponsiveDesign()
 
   return (
-    <div className={`min-h-screen bg-slate-900 text-slate-100 text-center ${onMobile ? (isStandalone ? "px-2 pt-14 overflow-hidden" : "px-2 overflow-hidden") : "px-10 pt-20"}`}>
+    <div className={`min-h-screen bg-slate-900 text-slate-100 text-center ${onMobile ? (isStandalone ? "px-2 pt-14 overflow-hidden" : "px-2 overflow-hidden") : "px-10 pt-4"}`}>
       <div className="flex flex-row w-full justify-center items-center mb-3">
         <img
           src="/mp-logo.svg"
@@ -22,7 +22,7 @@ export default function HomePage() {
         Procedural tools for Minecraft builders.
       </p>
 
-      <div className={`${onMobile ? (isStandalone ? "mt-6" : "mt-2") : "mt-12"} flex justify-center`}>
+      <div className={`${onMobile ? (isStandalone ? "mt-6" : "mt-2") : "mt-8"} flex justify-center`}>
         <div className={`w-full max-w-5xl ${onMobile ? "grid grid-cols-1 gap-2" : "grid grid-cols-2 gap-6 [&>*:last-child]:col-span-2 [&>*:last-child]:justify-self-center"} items-stretch`}>
           <BreathingOscillationProvider>
             {/* Circle Generator Preview */}

@@ -25,7 +25,7 @@ export default function generateCircularInstructions(grid: CircularCellType[][],
     const instructionString = (
       i === 0
       ? (bodyOffset > 0
-          ? `Place ${numBlocksToPlace} block${numBlocksToPlace === 1 ? "" : "s"} in a row, offset ${bodyOffset} from the top, as shown below.`
+          ? `Place ${numBlocksToPlace} block${numBlocksToPlace === 1 ? "" : "s"} in a row, inset ${bodyOffset} from the base, as shown below.`
           : `Place ${numBlocksToPlace} block${numBlocksToPlace === 1 ? "" : "s"} in a row, as shown below.`
         )
       : `Place ${numBlocksToPlace} block${numBlocksToPlace === 1 ? "" : "s"} in row ${step}, as shown below.`
