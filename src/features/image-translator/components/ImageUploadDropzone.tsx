@@ -104,7 +104,14 @@ export default function ImageUploadDropzone({
           <button
             type="button"
             onClick={handleClear}
-            className="self-start rounded-md border border-slate-600 bg-slate-800 px-3 py-1 text-xs font-medium text-slate-100 hover:bg-slate-700 hover:border-slate-500 transition-colors"
+            className={`
+              self-start rounded-md border
+              border-slate-600 bg-slate-800
+              px-3 py-1 text-xs font-medium
+              text-slate-100 hover:bg-slate-700
+              hover:border-slate-500 transition-colors
+              cursor-pointer
+            `}
           >
             Clear image
           </button>

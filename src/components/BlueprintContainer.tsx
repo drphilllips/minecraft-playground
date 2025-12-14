@@ -56,6 +56,7 @@ export default function BlueprintContainer({
             shadow-lg shadow-sky-500/20
             transition-all duration-200 ease-out
             outline-none
+            cursor-pointer
           `}
           style={{
             width: isHovered ? expandedWidth : baseWidth,
