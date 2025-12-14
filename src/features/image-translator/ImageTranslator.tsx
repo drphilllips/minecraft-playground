@@ -6,12 +6,20 @@ import { FeatureContainer, FeatureOutputContainer, FeatureOutputSummaryContainer
 import { useResponsiveDesign } from "../../contexts/useResponsiveDesign";
 import loadImageFromFile from "./utils/loadImageFromFile";
 import generateImageGrid from "./utils/generateImageGrid";
-import type { MinecraftBlock } from "./types/minecraftBlock";
+import type { BlockLab, MinecraftBlock } from "./types/minecraftBlock";
 import ImageUploadDropzone from "./components/ImageUploadDropzone";
-import BlockSummary from "./components/BlockSummary";
+import BlockSummaryView from "./components/BlockSummary";
 import calculateBlockSummary from "./utils/blockSummary";
 import { hasBlocks } from "../../utils/objectHasValues";
 import BlueprintContainer from "../../components/BlueprintContainer";
+import { MINECRAFT_BLOCKS } from "./constants/minecraftBlocks";
+import type { BlockFilter } from "./types/blockFilter";
+import FeatureModal from "../../components/FeatureModal";
+import BlockFilterView from "./components/BlockFilter";
+import { applyBlockFilter } from "./utils/applyBlockFilter";
+import BlankLabel from "../../components/Label";
+import type { BlockId } from "./types/blockId";
+import type { BlockMaterial } from "./types/blockMaterial";
 
 
 export default function ImageTranslator() {
@@ -49,6 +57,17 @@ export default function ImageTranslator() {
 
   const [imageGrid, setImageGrid] = useState<MinecraftBlock[][]>([]);
 
+  const [blockFilter, setBlockFilter] = useState<BlockFilter>({});
+  const [blockFilterViewOpen, setBlockFilterViewOpen] = useState(false);
+
+  const blockPool = useMemo(() => (
+    applyBlockFilter(Object.values(MINECRAFT_BLOCKS), blockFilter)
+  ), [blockFilter]);
+
+  const blockLabPool: BlockLab[] = useMemo(() => (
+    blockPool.map((block: MinecraftBlock) => ({ id: block.id, lab: block.color.lab }))
+  ), [blockPool]);
+
   useEffect(() => {
     let cancelled = false;
 
@@ -57,18 +76,34 @@ export default function ImageTranslator() {
         setImageGrid([]);
         return;
       }
-      const result = await generateImageGrid(sourceImageHTMLElement, numericResolution);
+      const result = await generateImageGrid(blockLabPool, sourceImageHTMLElement, numericResolution);
       if (!cancelled) setImageGrid(result);
     }
 
     run();
     return () => { cancelled = true; };
-  }, [sourceImageHTMLElement, numericResolution]);
+  }, [blockLabPool, sourceImageHTMLElement, numericResolution]);
 
   const blockSummary = useMemo(() => {
     if (imageGrid.length === 0) return {};
     return calculateBlockSummary(imageGrid);
   }, [imageGrid]);
+
+  function removeBlock(blockId: BlockId) {
+    setBlockFilter(prev => ({
+      ...prev,
+      removeBlocks: [...(prev.removeBlocks || []), blockId]
+    }))
+  }
+
+  function removeMaterialFilter(remove: BlockMaterial) {
+    setBlockFilter(prev => ({
+      ...prev,
+      materials: prev.materials?.filter(
+        material => material !== remove
+      )
+    }));
+  }
 
   return (
     <FeatureContainer
@@ -110,12 +145,10 @@ export default function ImageTranslator() {
             </BlueprintContainer>
           ): (
             <FeatureOutputContainer>
-              <p
-                className="text-sm md:text-base text-slate-500 italic leading-relaxed"
+              <BlankLabel
+                text="Upload an image to see it translated to Minecraft blocks."
                 style={{ width: effectiveGridMaxSize, maxWidth: effectiveGridMaxSize }}
-              >
-                Upload an image to see it translated to Minecraft blocks.
-              </p>
+              />
             </FeatureOutputContainer>
           )}
         </>
@@ -124,9 +157,25 @@ export default function ImageTranslator() {
         <>
           {hasBlocks(blockSummary) && (
             <FeatureOutputSummaryContainer>
-              <BlockSummary blockSummary={blockSummary} />
+              <BlockSummaryView
+                blockSummary={blockSummary}
+                blockFilter={blockFilter}
+                setBlockFilterViewOpen={setBlockFilterViewOpen}
+                onRemoveBlock={removeBlock}
+                removeMaterialFilter={removeMaterialFilter}
+              />
             </FeatureOutputSummaryContainer>
           )}
+          <FeatureModal
+            visible={blockFilterViewOpen}
+            title="Filter Block Materials"
+            onClose={() => setBlockFilterViewOpen(false)}
+          >
+            <BlockFilterView
+              blockFilter={blockFilter}
+              setBlockFilter={setBlockFilter}
+            />
+          </FeatureModal>
         </>
       }
     />

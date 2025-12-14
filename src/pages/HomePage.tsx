@@ -23,7 +23,7 @@ export default function HomePage() {
       </p>
 
       <div className={`${onMobile ? (isStandalone ? "mt-6" : "mt-2") : "mt-8"} flex justify-center`}>
-        <div className={`w-full max-w-5xl ${onMobile ? "grid grid-cols-1 gap-2" : "grid grid-cols-2 gap-6 [&>*:last-child]:col-span-2 [&>*:last-child]:justify-self-center"} items-stretch`}>
+        <div className="w-full max-w-5xl flex flex-wrap justify-center items-stretch gap-2">
           <BreathingOscillationProvider>
             {/* Circle Generator Preview */}
             <FeaturePreview

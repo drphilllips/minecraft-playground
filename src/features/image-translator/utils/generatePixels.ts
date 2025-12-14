@@ -1,7 +1,7 @@
-import type { MinecraftBlock } from "../types/minecraftBlock";
+import type { BlockLab, MinecraftBlock } from "../types/minecraftBlock";
 import { findClosestBlock } from "./colorMatching";
 
-export default async function generatePixels(image: HTMLImageElement | null, resolution: number): Promise<MinecraftBlock[][]> {
+export default async function generatePixels(blockLabPool: BlockLab[], image: HTMLImageElement | null, resolution: number): Promise<MinecraftBlock[][]> {
   if (!image || !Number.isFinite(resolution) || resolution <= 0) {
     return [];
   }
@@ -34,7 +34,7 @@ export default async function generatePixels(image: HTMLImageElement | null, res
         const r = imageData.data[idx];
         const g = imageData.data[idx + 1];
         const b = imageData.data[idx + 2];
-        row.push(findClosestBlock(r, g, b));
+        row.push(findClosestBlock(blockLabPool, r, g, b));
       }
       pixels.push(row);
     }

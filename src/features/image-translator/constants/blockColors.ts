@@ -1,5 +1,6 @@
 import { BLOCK_IDS, type BlockId } from "../types/blockId";
 import type { BlockColor } from "../types/color";
+import type { BlockLab } from "../types/minecraftBlock";
 import { c, lab, rgb } from "../utils/colors";
 
 export const BLOCK_COLORS: Record<BlockId, BlockColor> = {
@@ -227,7 +228,7 @@ export const BLOCK_COLORS: Record<BlockId, BlockColor> = {
   yellow_wool: c(rgb(253,211,53), lab(85.89,-0.02,77.01)),
 };
 
-export const BLOCK_LABS = BLOCK_IDS.map(id => ({
+export const ALL_BLOCK_LABS: BlockLab[] = BLOCK_IDS.map(id => ({
   id,
   lab: BLOCK_COLORS[id].lab
 }));

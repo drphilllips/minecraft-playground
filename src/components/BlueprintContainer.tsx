@@ -3,11 +3,11 @@ import { ChevronRight } from "lucide-react"
 import type { BlueprintCircularInstructions } from "../types/blueprintInstruction"
 import IntegerSlider from "./IntegerSlider"
 import GridView from "./GridView"
-import Separator from "./Separator"
 import useCircularGridView from "../hooks/useCircularGridView"
 import { useResponsiveDesign } from "../contexts/useResponsiveDesign"
 import ImageBlueprintGridView from "../features/image-translator/components/ImageBlueprintGridView"
 import type { MinecraftBlock } from "../features/image-translator/types/minecraftBlock"
+import FeatureModal from "./FeatureModal"
 
 
 export default function BlueprintContainer({
@@ -23,26 +23,16 @@ export default function BlueprintContainer({
   imageGrid?: MinecraftBlock[][]
   children: React.ReactNode
 }) {
-  const { onMobile } = useResponsiveDesign();
-
   const [isHovered, setIsHovered] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
 
   const baseWidth = "1.75rem"
   const expandedWidth = "2.75rem"
 
-  const handleOpen = () => {
-    setIsOpen(true)
-  }
-
-  const handleClose = () => {
-    setIsOpen(false)
-  }
-
   const handleKeyDown: React.KeyboardEventHandler<HTMLButtonElement> = (event) => {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault()
-      handleOpen()
+      setIsOpen(true)
     }
   }
 
@@ -74,7 +64,7 @@ export default function BlueprintContainer({
           onMouseLeave={() => setIsHovered(false)}
           onPointerDown={() => setIsHovered(true)}
           onPointerUp={() => setIsHovered(false)}
-          onClick={handleOpen}
+          onClick={() => setIsOpen(true)}
           onKeyDown={handleKeyDown}
           aria-label="Open blueprint"
         >
@@ -96,54 +86,23 @@ export default function BlueprintContainer({
       </div>
 
       {/* Modal overlay */}
-      {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 backdrop-blur-sm">
-          <div className="relative flex flex-col w-[92vw] max-w-5xl h-[80vh] rounded-2xl border border-sky-500/70 bg-slate-900 shadow-2xl shadow-sky-500/30">
-            <div className="relative flex flex-row w-full items-center">
-              {/* Title & Subtitle */}
-              <div
-                className={`
-                  inline-flex flex-col gap-1 items-center
-                  w-fit mx-auto pb-2
-                  ${onMobile ? "pt-12" : "pt-4"}
-                `}
-              >
-                <h2 className="text-3xl font-bold text-slate-100 tracking-tight text-center">
-                  {blueprintTitle}
-                </h2>
-                <Separator />
-                <p className="max-w-2xl font-bold leading-tight text-slate-400 text-lg text-center">
-                  {blueprintSubTitle.toUpperCase()}
-                </p>
-              </div>
-
-
-              {/* Close button */}
-              <button
-                type="button"
-                className="absolute right-4 top-4 rounded-full border border-slate-600 bg-slate-800/80 px-3 py-1 text-xs font-medium uppercase tracking-wide text-slate-100 shadow-sm hover:bg-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400"
-                onClick={handleClose}
-              >
-                Close
-              </button>
-            </div>
-
-            {/* Placeholder content */}
-            <div className="flex-1 min-h-0 flex flex-col items-center justify-start text-center">
-              {(instructions || imageGrid) ? (
-                <BlueprintInstructions
-                  instructions={instructions}
-                  imageGrid={imageGrid}
-                />
-              ) : (
-                <p className="max-w-xl text-sm text-slate-300 sm:text-base">
-                  No instructions are available at this moment
-                </p>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
+      <FeatureModal
+        visible={isOpen}
+        title={blueprintTitle}
+        subTitle={blueprintSubTitle}
+        onClose={() => setIsOpen(false)}
+      >
+        {(instructions || imageGrid) ? (
+          <BlueprintInstructions
+            instructions={instructions}
+            imageGrid={imageGrid}
+          />
+        ) : (
+          <p className="max-w-xl text-sm text-slate-300 sm:text-base">
+            No instructions are available at this moment
+          </p>
+        )}
+      </FeatureModal>
     </>
   )
 }
@@ -230,7 +189,7 @@ function BlueprintInstructions({
           </p>
         )}
       </div>
-      <div className={`flex flex-col pt-8 pb-12 items-center gap-5 ${onMobileSideways ? "" : "mt-2"}`}>
+      <div className={`flex flex-col pt-6 pb-12 items-center gap-5 ${onMobileSideways ? "" : "mt-2"}`}>
         {imageGrid && (
           <ImageBlueprintGridView
             grid={imageGrid}
