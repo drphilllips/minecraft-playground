@@ -268,7 +268,7 @@ function SelectMaterialFilterTag({
         text-slate-100 text-sm
         whitespace-nowrap
       `}
-      activeClass="active:bg-slate-700/70 active:border-slate-500/70"
+      activeClass="active:bg-slate-600/70 active:border-slate-500/70"
       hoverClass="hover:bg-slate-700/70 hover:border-slate-500/70"
     >
       <BlockTexture
