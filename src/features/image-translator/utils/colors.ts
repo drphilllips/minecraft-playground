@@ -1,6 +1,7 @@
 import type { BlockId } from "../types/blockId";
+import type { BlockMaterial } from "../types/blockMaterial";
 import type { BlockColor, LabColor, RgbColor } from "../types/color";
-import type { BlockMaterial, MinecraftBlock } from "../types/minecraftBlock";
+import type { MinecraftBlock } from "../types/minecraftBlock";
 
 export const mb = (id: BlockId, name: string, color: BlockColor, material: BlockMaterial[]): MinecraftBlock => (
   { id, name, color, material }
