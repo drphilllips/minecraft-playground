@@ -19,8 +19,7 @@ export default function HoverableOpacity({
   const { onMobile } = useResponsiveDesign();
 
   return (
-    <button
-      type="button"
+    <div
       onClick={(e) => {
         // Prevent parent containers from also receiving this click
         e.stopPropagation();
@@ -40,6 +39,6 @@ export default function HoverableOpacity({
       `}
     >
       {children}
-    </button>
+    </div>
   )
 }
